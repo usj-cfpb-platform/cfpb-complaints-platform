@@ -1,0 +1,4 @@
+# Development and CI tools (pinned). Service-specific requirements are added per layer.
+pytest==8.3.4
+ruff==0.8.4
+PyYAML==6.0.2

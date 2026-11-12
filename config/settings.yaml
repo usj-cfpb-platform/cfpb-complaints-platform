@@ -1,0 +1,35 @@
+# Non-secret project configuration (committed).
+# Secrets and machine-specific values live in .env (see .env.example).
+
+project:
+  name: cfpb-complaints-platform
+  cohort_standard_version: "0.1"
+
+domain:
+  # DOMAIN NEEDED: set when the lecturer assigns our domain.
+  # `products` must list the exact CFPB `product` labels, including historical
+  # labels that were renamed over time (see the taxonomy timeline, Turn 3).
+  slug: unassigned
+  products: []
+
+source:
+  full_csv_url: "https://files.consumerfinance.gov/ccdb/complaints.csv.zip"
+  # Verify against https://cfpb.github.io/api/ccdb/api.html in Turn 2.
+  api_base_url: "https://www.consumerfinance.gov/data-research/consumer-complaints/search/api/v1/"
+
+incremental:
+  schedule_cron_utc: "17 3,15 * * *"   # every 12 h, off the top of the hour
+  lookback_days: 45                    # provisional; set from measured publication lag (D1)
+  timeout_seconds: 60
+  max_retries: 5
+  backoff_base_seconds: 2
+
+storage:
+  # Object prefixes inside the MinIO bucket (brief section 8.3).
+  raw_full_load_prefix: "raw/cfpb/full_load"
+  raw_api_prefix: "raw/cfpb/api"
+  curated_prefix: "curated/complaints"
+  quality_prefix: "quality"
+
+privacy:
+  min_cell_size: 10   # small-cell suppression threshold (k)

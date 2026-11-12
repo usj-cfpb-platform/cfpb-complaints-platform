@@ -1,0 +1,14 @@
+# Code owners are requested automatically as reviewers on PRs touching their paths.
+# Every path lists at least two people so an author is never the only possible approver.
+# TODO(Turn 1): replace the commented lines once Maroun's and Ali's usernames are known.
+
+*                       @MhamadNaserDine
+
+# /ingestion/           @MAROUN_USERNAME @MhamadNaserDine
+# /processing/          @ALI_USERNAME @MhamadNaserDine
+# /database/            @MhamadNaserDine @ALI_USERNAME
+# /analytics/           @MAROUN_USERNAME @ALI_USERNAME
+# /dashboard/           @ALI_USERNAME @MAROUN_USERNAME
+# /docs/                @MhamadNaserDine @MAROUN_USERNAME @ALI_USERNAME
+# /.github/             @MhamadNaserDine @MAROUN_USERNAME @ALI_USERNAME
+# /docker-compose.yml   @MhamadNaserDine @ALI_USERNAME
