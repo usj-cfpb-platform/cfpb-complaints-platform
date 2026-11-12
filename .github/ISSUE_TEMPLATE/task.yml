@@ -1,0 +1,42 @@
+name: Task
+description: A unit of work owned by one member
+title: "[task] "
+labels: ["task"]
+body:
+  - type: dropdown
+    id: layer
+    attributes:
+      label: Layer
+      options:
+        - infra
+        - ingestion
+        - processing
+        - database
+        - analysis
+        - dashboard
+        - docs
+        - test
+    validations:
+      required: true
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: What must exist when this is done?
+    validations:
+      required: true
+  - type: textarea
+    id: done
+    attributes:
+      label: Definition of done
+      description: Checkable criteria (tests, evidence, docs).
+      value: |
+        - [ ]
+        - [ ]
+    validations:
+      required: true
+  - type: input
+    id: rubric
+    attributes:
+      label: Rubric line / brief section
+      placeholder: "e.g. Data acquisition 15% / brief 8.2"

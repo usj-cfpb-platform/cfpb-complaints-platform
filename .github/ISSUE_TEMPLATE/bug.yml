@@ -1,0 +1,36 @@
+name: Defect
+description: Something is broken (also feeds the defect log)
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What was expected
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps / command to reproduce
+      render: shell
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or error output
+      render: text
+  - type: dropdown
+    id: found_by
+    attributes:
+      label: Found by
+      options:
+        - automated test
+        - quality gate
+        - manual check
+        - review
