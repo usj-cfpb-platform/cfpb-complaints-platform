@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Incremental API run metadata",
+  "type": "object",
+  "required": ["run_id", "trigger", "started_at", "finished_at", "endpoint", "request_params",
+               "window", "pagination", "http", "outcome", "raw_objects", "record_count",
+               "high_water_mark", "source_meta", "code_version"],
+  "properties": {
+    "run_id": {"type": "string", "pattern": "^api_[0-9]{8}T[0-9]{6}Z_[0-9a-f]{6}$"},
+    "trigger": {"enum": ["schedule", "manual", "test"]},
+    "scheduled_for": {"type": ["string", "null"]},
+    "started_at": {"type": "string"},
+    "finished_at": {"type": "string"},
+    "endpoint": {"type": "string"},
+    "request_params": {"type": "object"},
+    "window": {
+      "type": "object",
+      "required": ["date_received_min", "date_received_max", "lookback_days"],
+      "properties": {
+        "date_received_min": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
+        "date_received_max": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
+        "lookback_days": {"type": "integer", "minimum": 0}
+      }
+    },
+    "pagination": {
+      "type": "object",
+      "required": ["page_size", "pages_fetched"],
+      "properties": {
+        "page_size": {"type": "integer", "minimum": 1},
+        "pages_fetched": {"type": "integer", "minimum": 0},
+        "last_search_after": {"type": ["string", "null"]}
+      }
+    },
+    "http": {
+      "type": "object",
+      "required": ["final_status", "retry_count"],
+      "properties": {
+        "final_status": {"type": ["integer", "null"]},
+        "retry_count": {"type": "integer", "minimum": 0}
+      }
+    },
+    "outcome": {"enum": ["success", "partial", "failed"]},
+    "raw_objects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "bytes", "sha256", "records"],
+        "properties": {
+          "path": {"type": "string", "pattern": "^raw/cfpb/api/ingest_date=[0-9]{4}-[0-9]{2}-[0-9]{2}/run_id=[^/]+/response_[0-9]{4}\\.json$"},
+          "bytes": {"type": "integer", "minimum": 0},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "records": {"type": "integer", "minimum": 0}
+        }
+      }
+    },
+    "record_count": {"type": "integer", "minimum": 0},
+    "high_water_mark": {
+      "type": "object",
+      "required": ["previous", "next"],
+      "properties": {
+        "previous": {"$ref": "#/$defs/hwm"},
+        "next": {"$ref": "#/$defs/hwm"}
+      }
+    },
+    "source_meta": {"type": "object"},
+    "code_version": {"type": "string"}
+  },
+  "$defs": {
+    "hwm": {
+      "type": ["object", "null"],
+      "required": ["date_received", "complaint_id"],
+      "properties": {
+        "date_received": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
+        "complaint_id": {"type": "string"}
+      }
+    }
+  }
+}

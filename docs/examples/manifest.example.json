@@ -1,0 +1,15 @@
+{
+  "run_id": "full_20261113T090000Z_9f8e7d",
+  "source_url": "https://files.consumerfinance.gov/ccdb/complaints.csv.zip",
+  "download_started_at": "2026-11-13T09:00:00Z",
+  "download_finished_at": "2026-11-13T10:45:12Z",
+  "archive_path": "raw/cfpb/full_load/ingest_date=2026-11-13/run_id=full_20261113T090000Z_9f8e7d/complaints.csv.zip",
+  "archive_bytes": 1234567890,
+  "archive_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "extracted_path": "raw/cfpb/full_load/ingest_date=2026-11-13/run_id=full_20261113T090000Z_9f8e7d/extracted/complaints.csv",
+  "extracted_bytes": 9876543210,
+  "extracted_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "record_count": 19112942,
+  "header": ["Date received", "Product", "Sub-product", "Issue", "Sub-issue", "Company public response", "Company", "State", "ZIP code", "Tags", "Consumer consent provided?", "Submitted via", "Date sent to company", "Company response to consumer", "Timely response?", "Consumer disputed?", "Complaint ID"],
+  "code_version": "0000000"
+}
