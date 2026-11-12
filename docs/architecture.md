@@ -5,7 +5,7 @@ Status: v0.1 (Turn 1). Owner: Mhamad. Reviewed by: Maroun, Ali.
 ## Data flow
 
 ```mermaid
-flowchart LR
+flowchart TB
     subgraph Sources["CFPB (public, CC0)"]
         CSV["Full CSV ZIP<br/>(historical load)"]
         API["Complaint Search API<br/>(incremental, every 12 h)"]
