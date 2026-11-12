@@ -1,0 +1,32 @@
+name: API reachability probe
+
+# Answers one question before Turn 2: can GitHub-hosted runners reach the CFPB API?
+# If yes, GitHub Actions can be our 12-hour scheduler (no always-on laptop needed).
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "scripts/api_probe.py"
+      - ".github/workflows/api-probe.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Call the CFPB API (small, date-bounded request)
+        run: python -m scripts.api_probe --out probe_output
+      - name: Keep the raw response and metadata as evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-probe-${{ github.run_id }}
+          path: probe_output/
+          retention-days: 30
