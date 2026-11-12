@@ -1,0 +1,4 @@
+# Spark image = Python runtime + PySpark. Pinned.
+# PySpark 3.5.3 bundles Hadoop 3.3.4; the S3A jars in docker/spark/Dockerfile must match it.
+-r requirements.txt
+pyspark==3.5.3

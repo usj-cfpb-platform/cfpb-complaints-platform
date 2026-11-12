@@ -1,0 +1,12 @@
+.git
+.venv
+venv
+data
+minio-data
+mongo-data
+**/__pycache__
+.pytest_cache
+.ruff_cache
+*.parquet
+*.csv.zip
+.env

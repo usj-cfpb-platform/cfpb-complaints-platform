@@ -43,12 +43,27 @@ docker-compose.yml   local service orchestration (in progress)
 
 ## Quick start
 
-> Work in progress: Docker Compose services are added in the next PR.
+Prerequisites: Docker Desktop (Compose v2+), Git, about 6 GB free RAM for Docker.
 
 ```bash
-cp .env.example .env          # then edit the placeholders
-python -m pip install -r requirements-dev.txt
-python -m pytest
+cp .env.example .env              # Windows PowerShell: Copy-Item .env.example .env
+docker compose up -d --build      # first build downloads Java, PySpark and S3A jars (several minutes)
+docker compose ps                 # minio, mongodb, dashboard running; storage-init and spark exited (0)
+docker compose logs spark         # expect: "Smoke test PASSED"
+```
+
+| Service | URL | Purpose |
+|---|---|---|
+| MinIO console | http://localhost:9001 | Raw, curated and quality zones (log in with `.env` credentials) |
+| Streamlit | http://localhost:8501 | Dashboard |
+| MongoDB | `mongodb://localhost:27017` | Serving layer (MongoDB Compass) |
+| Spark UI | http://localhost:4040 | Only while a Spark job runs |
+
+```bash
+docker compose run --rm spark python -m processing.smoke_test   # rerun the Spark <-> MinIO check
+docker compose down               # stop (data kept)
+docker compose down -v            # reset: stop and DELETE all local data
+python -m pip install -r requirements-dev.txt && python -m pytest   # unit tests
 ```
 
 ## Status

@@ -1,0 +1,90 @@
+# Local platform: MinIO (raw/curated/quality zones) -> Spark -> MongoDB -> Streamlit.
+# Start: docker compose up -d --build     Stop: docker compose down     Reset data: docker compose down -v
+name: cfpb
+
+x-python-app: &python-app
+  build:
+    context: .
+    dockerfile: docker/python/Dockerfile
+  env_file: .env
+  volumes:
+    - ./:/app
+
+services:
+  minio:
+    # Official MinIO images are no longer published (Oct 2025); quay.io denies anonymous pulls.
+    # Chainguard's free build, pinned by digest for reproducibility (see docs/decisions).
+    image: cgr.dev/chainguard/minio@sha256:786cb11d340b1a657de8dc899560e36e1d1fb371d3d6f3eb6c903a0bb0cec714
+    command: ["server", "/data", "--console-address", ":9001"]
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    ports:
+      - "9000:9000"   # S3 API
+      - "9001:9001"   # web console
+    volumes:
+      - minio-data:/data
+    restart: unless-stopped
+
+  mongodb:
+    image: mongo:7.0@sha256:9896df581dfd0718b7abe112f4c37598d0986c54060e4ec1384997e6503c8c71
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    restart: unless-stopped
+
+  storage-init:
+    # One-shot: waits for MinIO, creates the bucket, then exits 0.
+    <<: *python-app
+    command: ["python", "-m", "scripts.init_storage"]
+    depends_on:
+      minio:
+        condition: service_started
+    restart: "no"
+
+  spark:
+    # Default command is a smoke test (write + read Parquet on MinIO), then exits.
+    # Real jobs: docker compose run --rm spark python -m processing.<job>
+    build:
+      context: .
+      dockerfile: docker/spark/Dockerfile
+    image: cfpb-spark:0.1
+    env_file: .env
+    volumes:
+      - ./:/app
+    ports:
+      - "4040:4040"   # Spark UI while a job runs
+    command: ["python", "-m", "processing.smoke_test"]
+    depends_on:
+      storage-init:
+        condition: service_completed_successfully
+    restart: "no"
+
+  dashboard:
+    <<: *python-app
+    command:
+      - streamlit
+      - run
+      - dashboard/app.py
+      - --server.port=8501
+      - --server.address=0.0.0.0
+      - --browser.gatherUsageStats=false
+    ports:
+      - "8501:8501"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  minio-data:
+  mongo-data:
