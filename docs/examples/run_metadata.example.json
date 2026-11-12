@@ -1,0 +1,24 @@
+{
+  "run_id": "api_20261113T031700Z_a1b2c3",
+  "trigger": "schedule",
+  "scheduled_for": "2026-11-13T03:17:00Z",
+  "started_at": "2026-11-13T03:21:04Z",
+  "finished_at": "2026-11-13T03:29:40Z",
+  "endpoint": "https://www.consumerfinance.gov/data-research/consumer-complaints/search/api/v1/",
+  "request_params": {"date_received_min": "2026-09-29", "date_received_max": "2026-11-13", "size": 1000, "sort": "created_date_desc", "product": ["<domain product>"], "no_aggs": true},
+  "window": {"date_received_min": "2026-09-29", "date_received_max": "2026-11-13", "lookback_days": 45},
+  "pagination": {"page_size": 1000, "pages_fetched": 2, "last_search_after": "1794435841000_32548220"},
+  "http": {"final_status": 200, "retry_count": 1},
+  "outcome": "success",
+  "raw_objects": [
+    {"path": "raw/cfpb/api/ingest_date=2026-11-13/run_id=api_20261113T031700Z_a1b2c3/response_0001.json", "bytes": 912345, "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "records": 1000},
+    {"path": "raw/cfpb/api/ingest_date=2026-11-13/run_id=api_20261113T031700Z_a1b2c3/response_0002.json", "bytes": 401234, "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "records": 437}
+  ],
+  "record_count": 1437,
+  "high_water_mark": {
+    "previous": {"date_received": "2026-11-12", "complaint_id": "32540001"},
+    "next": {"date_received": "2026-11-13", "complaint_id": "32548220"}
+  },
+  "source_meta": {"license": "CC0", "last_updated": "2026-11-12T12:00:00-05:00", "last_indexed": "2026-11-12T12:00:00-05:00", "total_record_count": 19112942, "is_data_stale": false, "has_data_issue": false},
+  "code_version": "0000000"
+}
