@@ -42,3 +42,24 @@ Narratives are not in the published data since September 2026 and are out of sco
 
 Deduplication tie-break (proposal, decided in Turn 3): keep the record from the most recent
 `ingested_at`; if equal, prefer `api` over `full_load`.
+
+## Turn 2 verification status (2026-11-14)
+
+Checked against the official CFPB OpenAPI spec (cfpb/ccdb5-api `swagger-config.yaml`):
+
+| Item | Finding |
+|---|---|
+| API `complaint_id` | integer in the spec; the contract stores it as a string (collectors convert) |
+| API `date_received` | typed `date` in the spec; collectors also accept ISO datetimes and epoch values |
+| API `date_sent_to_company` | typed string in the spec |
+| API `timely` | string filter (`Yes`/`No`) |
+| Date filters | `date_received_min` inclusive, `date_received_max` exclusive, format `YYYY-MM-DD` |
+
+**Still to confirm against the live services** (this environment could not reach the CFPB hosts).
+Run on a machine with internet access, then replace this note with the real values:
+
+```
+python -m ingestion.historical --inspect     # real CSV header, date formats, ZIP size, ETag
+python -m ingestion.incremental --dry-run --product "<label>"   # real API date format, _meta, cursors
+```
+

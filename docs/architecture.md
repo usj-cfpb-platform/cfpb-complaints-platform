@@ -87,3 +87,8 @@ Redis cache (no measured latency problem; listed as future work).
 | D-004 | 2026-11-12 | Incremental pagination with `search_after` keys, not `frm` offsets | API returns `_meta.break_points`; `frm` offsets reported to repeat page 1 | Probe output; to verify in Turn 2 |
 | D-005 | 2026-11-12 | Server-side product filter on every API request | About 680k complaints per 30 days across all products | Probe `total_hits_in_window` |
 | D-006 | 2026-11-12 | Public repository | Lecturer must see each member's contributions | Lecturer request |
+| D-007 | 2026-11-14 | Send `date_received_max = window end + 1 day` (configurable `date_max_exclusive`) | OpenAPI spec: max is exclusive; +1 day is safe if the spec is wrong (extra day is empty) | cfpb/ccdb5-api `swagger-config.yaml`; live confirmation pending |
+| D-008 | 2026-11-14 | Page size 100, not 1000 | Spec limits `size` to 100 (the example metadata showed 1000) | OpenAPI spec |
+| D-009 | 2026-11-14 | Compare unique records fetched with API `hits.total`; mismatch makes the run `partial` | Guards against skipped records if `search_after` cursors misbehave (D-004) | `tests/unit/test_incremental.py` |
+| D-010 | 2026-11-14 | Scheduled runner is stateless; `sync_artifacts` moves the MinIO high-water mark | Runner cannot reach MinIO; wide lookback makes each run self-sufficient | `.github/workflows/incremental-collection.yml` |
+| D-011 | 2026-11-14 | Skip a historical reload when ETag (or Last-Modified + size) is unchanged; never overwrite stored objects | Avoids re-downloading a multi-GB file; contract says raw is write-once | `tests/unit/test_historical.py` |

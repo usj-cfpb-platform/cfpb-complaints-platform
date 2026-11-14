@@ -84,3 +84,33 @@ One execution of the collector that:
 
 Overlap between runs is intended: complaints are published with a delay, so recent dates keep
 receiving new records. Duplicates are removed downstream by `complaint_id`.
+
+## 6. Completed batches and additive fields (Turn 2)
+
+**Completion rule (for Spark and every other reader).** Process a raw batch only if it is complete:
+
+| Source | Complete when |
+|---|---|
+| Historical load | `manifest.json` exists and is valid, and the ZIP and CSV it names exist with the recorded sizes |
+| API run | `run_metadata.json` exists and is valid, `outcome == "success"`, and every page in `raw_objects` exists with the recorded size |
+
+The marker (`manifest.json` / `run_metadata.json`) is always written **last**, so a batch without it
+(crash, outage) is incomplete and must be ignored. `partial` and `failed` runs keep their metadata
+for provenance but are not complete. The reference implementation is `ingestion/discovery.py`
+(`python -m ingestion.discovery --json`); Spark jobs should call it, or apply the same rule.
+
+**Optional fields written by the collectors.** The schemas allow extra properties; these were added
+without changing any required field:
+
+* `manifest.json`: `source_etag`, `source_last_modified`, `source_content_length` (used to skip a
+  reload when the CFPB file is unchanged), `http_retry_count`, `download_resumed`.
+* `run_metadata.json`: `pagination.cursor_sources` (how each `search_after` cursor was obtained),
+  `completeness` (`expected_total`, `expected_total_is_exact`, `unique_records_fetched`: the
+  collector compares unique records fetched with the API's own total and marks the run `partial`
+  if records are missing), and `error` (`type`, `message`) when `outcome != "success"`.
+
+**API limits that shape the collector** (CFPB OpenAPI spec, checked 2026-11-14): `size` is at most
+100; `date_received_max` is exclusive (the collector sends `max + 1 day`); `frm` is capped at 100000,
+so deep paging uses `search_after`; the API filters on `date_received` and `date_sent_to_company`
+but not on publication or update date, hence the lookback window. Authentication: none. Rate limits:
+not documented.
