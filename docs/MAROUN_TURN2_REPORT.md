@@ -1,6 +1,6 @@
 # Turn 2 report: CFPB data acquisition and raw data layer
 
-Author: Maroun Mashaalany. Course 020IABDM2 Big Data Frameworks, USJ / ESIB (Dr. Yehia Taher).
+Author: Maroun Machaalany. Course 020IABDM2 Big Data Frameworks, USJ / ESIB (Dr. Yehia Taher).
 Branch: `feat/turn2-acquisition-raw-layer`. Date of writing: 2026-11-14.
 
 > **Read this first: what is and is not verified.** The code was built and tested in an environment
@@ -515,7 +515,7 @@ committed, pushed or opened as a PR**; the working tree holds the changes. Commi
 identity (`CONTRIBUTING.md` section 1), for example as separate commits:
 
 ```powershell
-git config user.name  "Maroun Mashaalany"
+git config user.name  "Maroun Machaalany"
 git config user.email "<your-id>+<username>@users.noreply.github.com"
 
 git add ingestion/layout.py ingestion/storage.py ingestion/net.py ingestion/version.py ingestion/contracts.py ingestion/discovery.py tests/unit/ingest_helpers.py tests/unit/test_ingestion_layout_storage.py
