@@ -27,12 +27,13 @@ from ingest_helpers import (
     no_sleep,
 )
 
+from common.config import load_settings
 from ingestion.discovery import discover
 from ingestion.historical import HistoricalLoader, HistoricalSettings
 from ingestion.incremental import HighWaterMarkStore, IncrementalCollector, IncrementalSettings
 from ingestion.layout import Layout
 from ingestion.net import HttpClient, RetryPolicy
-from ingestion.storage import MinioStore, ObjectExistsError
+from ingestion.storage import MinioStore, ObjectExistsError, ObjectInfo
 
 pytest.importorskip("minio")
 
@@ -52,21 +53,54 @@ def store():
     return minio_store
 
 
+class PrefixedStore:
+    """Keeps every object under ``root/`` while the collectors still see canonical keys.
+
+    The contracts require paths that start with ``raw/cfpb/...``, so the layout must stay
+    canonical. This wrapper adds the ``_integration_tests/<uuid>/`` prefix on the way in and strips
+    it on the way out, which keeps the test objects separate from the real project data.
+    """
+
+    def __init__(self, inner: MinioStore, root: str) -> None:
+        self.inner = inner
+        self.root = root
+
+    def _k(self, key: str) -> str:
+        return f"{self.root}/{key}"
+
+    def exists(self, key: str) -> bool:
+        return self.inner.exists(self._k(key))
+
+    def stat(self, key: str):
+        info = self.inner.stat(self._k(key))
+        return None if info is None else ObjectInfo(key, info.size)
+
+    def put_bytes(self, key: str, data: bytes, **kwargs):
+        info = self.inner.put_bytes(self._k(key), data, **kwargs)
+        return ObjectInfo(key, info.size)
+
+    def put_file(self, key: str, path, **kwargs):
+        info = self.inner.put_file(self._k(key), path, **kwargs)
+        return ObjectInfo(key, info.size)
+
+    def get_bytes(self, key: str) -> bytes:
+        return self.inner.get_bytes(self._k(key))
+
+    def list_objects(self, prefix: str):
+        for obj in self.inner.list_objects(self._k(prefix)):
+            yield ObjectInfo(obj.key[len(self.root) + 1 :], obj.size)
+
+
 @pytest.fixture
 def zone(store):
     root = f"_integration_tests/{uuid.uuid4().hex[:12]}"
-    layout = Layout(
-        full_prefix=f"{root}/raw/cfpb/full_load",
-        api_prefix=f"{root}/raw/cfpb/api",
-        state_key=f"{root}/state/high_water_mark.json",
-    )
-    yield layout, root
+    yield PrefixedStore(store, root), Layout.from_settings(load_settings()), root
     for obj in list(store.list_objects(root)):  # remove only what this test created
         store.client.remove_object(store.bucket, obj.key)
 
 
 def test_write_once_is_enforced_by_real_minio(store, zone) -> None:
-    _, root = zone
+    _, _, root = zone
     key = f"{root}/probe.json"
     store.put_bytes(key, b"original")
     with pytest.raises(ObjectExistsError):
@@ -74,26 +108,26 @@ def test_write_once_is_enforced_by_real_minio(store, zone) -> None:
     assert store.get_bytes(key) == b"original"
 
 
-def test_historical_load_and_discovery_on_minio(store, zone, tmp_path) -> None:
-    layout, _ = zone
+def test_historical_load_and_discovery_on_minio(zone, tmp_path) -> None:
+    scoped, layout, _ = zone
     body = make_zip_bytes({"complaints.csv": csv_text(30)})
     with MockServer(FileServe(body)) as server:
         settings = HistoricalSettings(
             url=server.url + "/f.zip", backoff_base_seconds=0, tmp_dir=tmp_path
         )
         loader = HistoricalLoader(
-            store, layout, settings, HttpClient(settings.policy, sleep=no_sleep), version="it"
+            scoped, layout, settings, HttpClient(settings.policy, sleep=no_sleep), version="it"
         )
         result = loader.run()
         again = loader.run()
     assert result.status == "loaded" and again.status == "skipped_up_to_date"
-    assert store.get_bytes(result.manifest["archive_path"]) == body
-    [run] = [r for r in discover(store, layout, "full") if r.complete]
+    assert scoped.get_bytes(result.manifest["archive_path"]) == body
+    [run] = [r for r in discover(scoped, layout, "full") if r.complete]
     assert run.record_count == 30
 
 
-def test_incremental_run_and_checkpoint_on_minio(store, zone) -> None:
-    layout, _ = zone
+def test_incremental_run_and_checkpoint_on_minio(zone) -> None:
+    scoped, layout, _ = zone
     settings = IncrementalSettings(
         endpoint="https://api.example.org/",
         page_size=10,
@@ -104,12 +138,12 @@ def test_incremental_run_and_checkpoint_on_minio(store, zone) -> None:
         RetryPolicy(5, 2, 0), session=ScriptedSession(sim=ApiSim(make_records(25))), sleep=no_sleep
     )
     collector = IncrementalCollector(
-        store,
+        scoped,
         layout,
         settings,
         ("Product A", "Product B"),
         client,
-        HighWaterMarkStore(store, layout.state_key),
+        HighWaterMarkStore(scoped, layout.state_key),
         clock=lambda: datetime(2026, 11, 13, 9, tzinfo=UTC),
         sleep=no_sleep,
         version="it",
@@ -118,4 +152,4 @@ def test_incremental_run_and_checkpoint_on_minio(store, zone) -> None:
     second = collector.run()
     assert first.outcome == second.outcome == "success" and first.hwm_advanced
     assert not second.hwm_advanced
-    assert len([r for r in discover(store, layout, "api") if r.complete]) == 2
+    assert len([r for r in discover(scoped, layout, "api") if r.complete]) == 2
