@@ -211,6 +211,16 @@ def test_cursor_prefers_break_points_then_last_hit_sort() -> None:
     assert next_cursor(nothing, 1) == (None, None)
 
 
+def test_cursor_accepts_break_points_given_as_a_list() -> None:
+    hits = [{"_source": {"complaint_id": "1"}, "sort": [111, "1"]}]
+    body = {
+        "_meta": {"break_points": {"2": [1794435841000, "32548220"]}},
+        "hits": {"hits": hits},
+    }
+    page = parse_page(json.dumps(body).encode())
+    assert next_cursor(page, 1) == ("1794435841000_32548220", "break_points")
+
+
 def test_newest_record_ignores_unparsable_dates() -> None:
     page = parse_page(
         json.dumps(

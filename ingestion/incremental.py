@@ -319,6 +319,10 @@ def next_cursor(page: Page, page_number: int) -> tuple[str | None, str | None]:
         value = points.get(str(page_number + 1))
         if isinstance(value, str) and value.strip():
             return value.strip(), "break_points"
+        # The live API has been reported to return the sort values as a list,
+        # e.g. "2": [1794435841000, "32548220"] -> "1794435841000_32548220".
+        if isinstance(value, list) and value:
+            return "_".join(str(v) for v in value), "break_points"
     last = page.hits[-1] if page.hits else None
     sort_values = last.get("sort") if isinstance(last, dict) else None
     if isinstance(sort_values, list) and sort_values:
