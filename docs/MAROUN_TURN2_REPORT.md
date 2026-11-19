@@ -3,12 +3,14 @@
 Author: Maroun Machaalany. Course 020IABDM2 Big Data Frameworks, USJ / ESIB (Dr. Yehia Taher).
 Branch: `feat/turn2-acquisition-raw-layer`. Date of writing: 2026-11-14.
 
-> **Read this first: what is and is not verified.** The code was built and tested in an environment
-> that could not reach the CFPB websites (`files.consumerfinance.gov`, `consumerfinance.gov` were
-> refused by the sandbox proxy), had no Docker daemon, and did not have the `minio` Python package.
-> Everything that can be proven offline **is** proven (212 tests, a 343 MB / 3,000,000-row load at
-> 42 MB peak memory). Three things must be confirmed on your laptop with internet access before the
-> demo; they take minutes and are listed in section 8.3 and the checklist in section 14.
+> **Read this first: what is and is not verified (updated 2026-11-19).** The code was first built
+> and tested in a sandbox without access to CFPB, Docker or MinIO (212 tests, then 213 after a
+> pagination fix; a 343 MB / 3,000,000-row load at 42 MB peak memory). On 2026-11-19 the author then
+> ran it on a laptop against the **real CFPB file and a real MinIO container** (section 8.4): the
+> historical load succeeded (19,281,923 records), the rerun was skipped, discovery lists the batch
+> as complete, and the 3 MinIO integration tests pass. **Still not verified live:** the incremental
+> collector against the real API (needs the team's product label), the GitHub Actions schedule and
+> the artifact sync.
 
 ---
 
@@ -379,6 +381,21 @@ What to look for: (1) the header equals the contract example and dates look like
 "no search_after cursor could be derived", the cursor format differs from my assumption (section 12,
 risk 1) and `next_cursor` is the single function to adjust.
 
+### 8.4 Live verification on real services (2026-11-19, author's laptop, Docker Desktop)
+
+| Check | Result |
+|---|---|
+| `historical --inspect` | ZIP 369,245,274 bytes (0.37 GB); ETag and Last-Modified present; byte ranges accepted; member `complaints.csv`; 15-column header; dates `YYYY-MM-DD` |
+| `historical --dry-run` | Real MinIO reached (no earlier load found); two transient retries (2 s, 4 s) handled by the backoff |
+| `historical` (real load) | `status: loaded`, run `full_20261119T132939Z_439355`, **19,281,923 records**, extracted CSV 5,849,435,564 bytes, archive SHA-256 `67235fad...bdbaf2662`; the download took about one hour on a slow connection and its progress was visible as a growing `.part` file in `data/tmp` |
+| `ingestion.discovery` | `COMPLETE full full_20261119T132939Z_439355 records=19281923`; `1 complete, 0 incomplete` |
+| Rerun of `historical` | `skipped_up_to_date` (same ETag), nothing downloaded |
+| `pytest tests/integration` (real MinIO) | first run: 1 passed, 2 failed because the test layout used a prefix that the contract schemas reject (a test bug, fixed by a `PrefixedStore` wrapper, commit `2769a4d`); second run: **3 passed** |
+
+Lessons recorded: the collector Docker image does not contain pytest (install it in a throwaway
+container, as shown above); the extracted CSV is much larger than the ZIP (5.4 GiB), so disk space
+and MinIO storage should be planned for about 6 GB per full load.
+
 ## 9. Execution guide
 
 ### 9.1 Docker (the supported way), Windows PowerShell
@@ -574,17 +591,17 @@ the "second member repeats the load from an empty environment" criterion.
 | Incremental collector: window, pagination, retries, run metadata | COMPLETED AND VERIFIED (against a simulated API) | `incremental.py` | 70 tests | live `search_after` cursor shape and API date format unconfirmed |
 | Checkpoint advances only on success, never backward; crash and partial recovery | COMPLETED AND VERIFIED | `incremental.py` | crash, partial, metadata-failure, future-checkpoint tests | |
 | Late-arriving records: bounded reconciliation, limitation documented | COMPLETED AND VERIFIED (logic) | `incremental.py`, report 6 and 12 | window tests | lookback value is provisional |
-| MinIO raw layer: keys, write-once, completion marker, discovery | COMPLETED AND VERIFIED on `LocalStore` and a fake client | `layout.py`, `storage.py`, `discovery.py` | 29 + 23 tests | **real MinIO and the real `minio` library not exercised** |
-| Real MinIO integration test | IMPLEMENTED BUT NOT VERIFIED | `tests/integration/` | skipped (no MinIO, no package) | run section 8.3 step 3 |
+| MinIO raw layer: keys, write-once, completion marker, discovery | COMPLETED AND VERIFIED (unit tests and real MinIO) | `layout.py`, `storage.py`, `discovery.py` | 29 + 23 tests; real load and discovery on MinIO (section 8.4) | |
+| Real MinIO integration test | COMPLETED AND VERIFIED (2026-11-19) | `tests/integration/` | 3 passed against the Docker MinIO (section 8.4) | |
 | Configuration externalised, no secrets, domain not hard-coded | COMPLETED AND VERIFIED | `settings.yaml`, `storage.py` | unassigned-domain guard test and CLI check | |
 | CLI commands | COMPLETED AND VERIFIED (host Python, `--help` and real runs) | `ingestion/*.py` | outputs in section 9 | exact Docker invocations not run |
-| Docker compatibility | IMPLEMENTED BUT NOT VERIFIED | `docker-compose.yml` | `docker compose config` valid | no Docker daemon here |
+| Docker compatibility | COMPLETED AND VERIFIED (2026-11-19) | `docker-compose.yml` | `docker compose run --rm ingestion ...` ran the load, discovery and tests | |
 | Scheduled GitHub Actions workflow | IMPLEMENTED BUT NOT VERIFIED | `incremental-collection.yml` | YAML parses | never ran on GitHub; needs domain assigned |
 | Sync artifacts into MinIO | COMPLETED AND VERIFIED (logic, local sink) | `sync_artifacts.py` | 15 tests incl. tamper, resume, zip-slip | real GitHub API not called |
 | Dev sample with edge cases | COMPLETED AND VERIFIED | `make_sample.py`, `data/sample/` | tests; committed files match the generator | |
 | Spark hand-off documented | COMPLETED AND VERIFIED (documentation) | report 11, contracts 6 | discovery tests | Ali to confirm |
-| Risk issue: measure ZIP size, choose who downloads | BLOCKED | `--inspect`, `--dry-run` | | needs real HEAD from your connection |
-| Verify CSV header and API date formats; update dictionary | BLOCKED (live part) | `data_dictionary.md` | OpenAPI facts recorded | run section 8.3 steps 1-2 |
+| Risk issue: measure ZIP size, choose who downloads | COMPLETED AND VERIFIED (measurement); decision pending | `--inspect` | ZIP 0.37 GB; one real download took about 1 h on a slow connection | team to decide who downloads and when |
+| Verify CSV header and API date formats; update dictionary | CSV part COMPLETED AND VERIFIED; API part BLOCKED | `data_dictionary.md` | real header (15 columns) and `YYYY-MM-DD` dates recorded | API date format and cursor need the team's product label |
 | A second member repeats the load using only the README | NOT COMPLETED | README section added | | needs a teammate |
 | Turn 5 not implemented; teammates' code untouched | COMPLETED AND VERIFIED | | `git status`: no change in `processing/`, `database/`, `analytics/`, `dashboard/`, `common/` | |
 
