@@ -1,0 +1,567 @@
+{
+  "_meta": {
+    "license": "CC0",
+    "last_updated": "2026-11-13T12:00:00-05:00",
+    "last_indexed": "2026-11-13T12:00:00-05:00",
+    "total_record_count": 41,
+    "is_data_stale": false,
+    "has_data_issue": false,
+    "break_points": {}
+  },
+  "hits": {
+    "total": {
+      "value": 41,
+      "relation": "eq"
+    },
+    "max_score": null,
+    "hits": [
+      {
+        "_index": "complaint-public-v2",
+        "_id": "9000020",
+        "_score": null,
+        "_source": {
+          "complaint_id": "9000020",
+          "date_received": "2026-10-21",
+          "date_sent_to_company": "2026-10-22",
+          "product": "Product C",
+          "sub_product": null,
+          "issue": "Issue one",
+          "sub_issue": null,
+          "company": "Company 4",
+          "company_public_response": null,
+          "company_response": "Closed with explanation",
+          "state": "CA",
+          "zip_code": "691XX",
+          "tags": null,
+          "submitted_via": "Phone",
+          "timely": "Yes"
+        },
+        "sort": [
+          1792540800000,
+          "9000020"
+        ]
+      },
+      {
+        "_index": "complaint-public-v2",
+        "_id": "9000021",
+        "_score": null,
+        "_source": {
+          "complaint_id": "9000021",
+          "date_received": "2026-10-22",
+          "date_sent_to_company": "2026-10-24",
+          "product": "Product A",
+          "sub_product": null,
+          "issue": "Issue two",
+          "sub_issue": null,
+          "company": "Company 3",
+          "company_public_response": null,
+          "company_response": "Closed with monetary relief",
+          "state": "IL",
+          "zip_code": "927XX",
+          "tags": null,
+          "submitted_via": "Referral",
+          "timely": "Yes"
+        },
+        "sort": [
+          1792627200000,
+          "9000021"
+        ]
+      },
+      {
+        "_index": "complaint-public-v2",
+        "_id": "9000022",
+        "_score": null,
+        "_source": {
+          "complaint_id": "9000022",
+          "date_received": "2026-10-23",
+          "date_sent_to_company": "2026-10-24",
+          "product": "Product C",
+          "sub_product": null,
+          "issue": "Issue one",
+          "sub_issue": null,
+          "company": "Company 3",
+          "company_public_response": null,
+          "company_response": "Closed with monetary relief",
+          "state": "FL",
+          "zip_code": "381XX",
+          "tags": null,
+          "submitted_via": "Phone",
+          "timely": "No"
+        },
+        "sort": [
+          1792713600000,
+          "9000022"
+        ]
+      },
+      {
+        "_index": "complaint-public-v2",
+        "_id": "9000023",
+        "_score": null,
+        "_source": {
+          "complaint_id": "9000023",
+          "date_received": "2026-10-24",
+          "date_sent_to_company": "2026-10-27",
+          "product": "Product C",
+          "sub_product": null,
+          "issue": "Issue three",
+          "sub_issue": null,
+          "company": "Company 5",
+          "company_public_response": null,
+          "company_response": "Closed with monetary relief",
+          "state": "TX",
+          "zip_code": "263XX",
+          "tags": null,
+          "submitted_via": "Phone",
+          "timely": "No"
+        },
+        "sort": [
+          1792800000000,
+          "9000023"
+        ]
+      },
+      {
+        "_index": "complaint-public-v2",
+        "_id": "9000024",
+        "_score": null,
+        "_source": {
+          "complaint_id": "9000024",
+          "date_received": "2026-10-25",
+          "date_sent_to_company": "2026-10-28",
+          "product": "Product B",
+          "sub_product": null,
+          "issue": "Issue three",
+          "sub_issue": null,
+          "company": "Company 2",
+          "company_public_response": null,
+          "company_response": "Closed with monetary relief",
+          "state": "FL",
+          "zip_code": "931XX",
+          "tags": null,
+          "submitted_via": "Phone",
+          "timely": "Yes"
+        },
+        "sort": [
+          1792886400000,
+          "9000024"
+        ]
+      },
+      {
+        "_index": "complaint-public-v2",
+        "_id": "9000025",
+        "_score": null,
+        "_source": {
+          "complaint_id": "9000025",
+          "date_received": "2026-10-26",
+          "date_sent_to_company": "2026-10-27",
+          "product": "Product A",
+          "sub_product": null,
+          "issue": "Issue three",
+          "sub_issue": null,
+          "company": "Company 5",
+          "company_public_response": null,
+          "company_response": "In progress",
+          "state": "NY",
+          "zip_code": "549XX",
+          "tags": null,
+          "submitted_via": "Phone",
+          "timely": "Yes"
+        },
+        "sort": [
+          1792972800000,
+          "9000025"
+        ]
+      },
+      {
+        "_index": "complaint-public-v2",
+        "_id": "9000026",
+        "_score": null,
+        "_source": {
+          "complaint_id": "9000026",
+          "date_received": "2026-10-27",
+          "date_sent_to_company": "2026-10-27",
+          "product": "Product C",
+          "sub_product": null,
+          "issue": "Issue one",
+          "sub_issue": null,
+          "company": "Company 4",
+          "company_public_response": null,
+          "company_response": "Closed with explanation",
+          "state": "FL",
+          "zip_code": "173XX",
+          "tags": null,
+          "submitted_via": "Referral",
+          "timely": "No"
+        },
+        "sort": [
+          1793059200000,
+          "9000026"
+        ]
+      },
+      {
+        "_index": "complaint-public-v2",
+        "_id": "9000027",
+        "_score": null,
+        "_source": {
+          "complaint_id": "9000027",
+          "date_received": "2026-10-28",
+          "date_sent_to_company": "2026-10-29",
+          "product": "Product B",
+          "sub_product": null,
+          "issue": "Issue one",
+          "sub_issue": null,
+          "company": "Company 2",
+          "company_public_response": null,
+          "company_response": "Closed with explanation",
+          "state": "FL",
+          "zip_code": "227XX",
+          "tags": null,
+          "submitted_via": "Web",
+          "timely": "No"
+        },
+        "sort": [
+          1793145600000,
+          "9000027"
+        ]
+      },
+      {
+        "_index": "complaint-public-v2",
+        "_id": "9000028",
+        "_score": null,
+        "_source": {
+          "complaint_id": "9000028",
+          "date_received": "2026-10-29",
+          "date_sent_to_company": "2026-10-29",
+          "product": "Product B",
+          "sub_product": null,
+          "issue": "Issue three",
+          "sub_issue": null,
+          "company": "Company 3",
+          "company_public_response": null,
+          "company_response": "Closed with monetary relief",
+          "state": "NY",
+          "zip_code": "895XX",
+          "tags": null,
+          "submitted_via": "Phone",
+          "timely": "Yes"
+        },
+        "sort": [
+          1793232000000,
+          "9000028"
+        ]
+      },
+      {
+        "_index": "complaint-public-v2",
+        "_id": "9000029",
+        "_score": null,
+        "_source": {
+          "complaint_id": "9000029",
+          "date_received": "2026-10-30",
+          "date_sent_to_company": "2026-10-30",
+          "product": "Product B",
+          "sub_product": null,
+          "issue": "Issue two",
+          "sub_issue": null,
+          "company": "Company 1",
+          "company_public_response": null,
+          "company_response": "Closed with explanation",
+          "state": "FL",
+          "zip_code": "862XX",
+          "tags": null,
+          "submitted_via": "Phone",
+          "timely": "No"
+        },
+        "sort": [
+          1793318400000,
+          "9000029"
+        ]
+      },
+      {
+        "_index": "complaint-public-v2",
+        "_id": "9000030",
+        "_score": null,
+        "_source": {
+          "complaint_id": "9000030",
+          "date_received": "2026-10-01",
+          "date_sent_to_company": "2026-10-01",
+          "product": "Product B",
+          "sub_product": null,
+          "issue": "Issue two",
+          "sub_issue": null,
+          "company": "Company 4",
+          "company_public_response": null,
+          "company_response": "Closed with monetary relief",
+          "state": "IL",
+          "zip_code": "587XX",
+          "tags": null,
+          "submitted_via": "Referral",
+          "timely": "No"
+        },
+        "sort": [
+          1790812800000,
+          "9000030"
+        ]
+      },
+      {
+        "_index": "complaint-public-v2",
+        "_id": "9000031",
+        "_score": null,
+        "_source": {
+          "complaint_id": "9000031",
+          "date_received": "2026-10-02",
+          "date_sent_to_company": "2026-10-03",
+          "product": "Product A",
+          "sub_product": null,
+          "issue": "Issue two",
+          "sub_issue": null,
+          "company": "Company 1",
+          "company_public_response": null,
+          "company_response": "Closed with explanation",
+          "state": "CA",
+          "zip_code": "181XX",
+          "tags": null,
+          "submitted_via": "Web",
+          "timely": "No"
+        },
+        "sort": [
+          1790899200000,
+          "9000031"
+        ]
+      },
+      {
+        "_index": "complaint-public-v2",
+        "_id": "9000032",
+        "_score": null,
+        "_source": {
+          "complaint_id": "9000032",
+          "date_received": "2026-10-03",
+          "date_sent_to_company": "2026-10-03",
+          "product": "Product C",
+          "sub_product": null,
+          "issue": "Issue two",
+          "sub_issue": null,
+          "company": "Company 2",
+          "company_public_response": null,
+          "company_response": "Closed with explanation",
+          "state": "NY",
+          "zip_code": "517XX",
+          "tags": null,
+          "submitted_via": "Phone",
+          "timely": "Yes"
+        },
+        "sort": [
+          1790985600000,
+          "9000032"
+        ]
+      },
+      {
+        "_index": "complaint-public-v2",
+        "_id": "9000033",
+        "_score": null,
+        "_source": {
+          "complaint_id": "9000033",
+          "date_received": "2026-10-04",
+          "date_sent_to_company": "2026-10-07",
+          "product": "Product C",
+          "sub_product": null,
+          "issue": "Issue three",
+          "sub_issue": null,
+          "company": "Company 4",
+          "company_public_response": null,
+          "company_response": "Closed with monetary relief",
+          "state": "CA",
+          "zip_code": "160XX",
+          "tags": null,
+          "submitted_via": "Web",
+          "timely": "No"
+        },
+        "sort": [
+          1791072000000,
+          "9000033"
+        ]
+      },
+      {
+        "_index": "complaint-public-v2",
+        "_id": "9000034",
+        "_score": null,
+        "_source": {
+          "complaint_id": "9000034",
+          "date_received": "2026-10-05",
+          "date_sent_to_company": "2026-10-05",
+          "product": "Product B",
+          "sub_product": null,
+          "issue": "Issue one",
+          "sub_issue": null,
+          "company": "Company 4",
+          "company_public_response": null,
+          "company_response": "Closed with explanation",
+          "state": "FL",
+          "zip_code": "181XX",
+          "tags": null,
+          "submitted_via": "Phone",
+          "timely": "No"
+        },
+        "sort": [
+          1791158400000,
+          "9000034"
+        ]
+      },
+      {
+        "_index": "complaint-public-v2",
+        "_id": "9000035",
+        "_score": null,
+        "_source": {
+          "complaint_id": "9000035",
+          "date_received": "2026-10-06",
+          "date_sent_to_company": "2026-10-08",
+          "product": "Product C",
+          "sub_product": null,
+          "issue": "Issue two",
+          "sub_issue": null,
+          "company": "Company 2",
+          "company_public_response": null,
+          "company_response": "Closed with monetary relief",
+          "state": "NY",
+          "zip_code": "997XX",
+          "tags": null,
+          "submitted_via": "Referral",
+          "timely": "No"
+        },
+        "sort": [
+          1791244800000,
+          "9000035"
+        ]
+      },
+      {
+        "_index": "complaint-public-v2",
+        "_id": "9000036",
+        "_score": null,
+        "_source": {
+          "complaint_id": "9000036",
+          "date_received": "2026-10-07",
+          "date_sent_to_company": "2026-10-08",
+          "product": "Product C",
+          "sub_product": null,
+          "issue": "Issue one",
+          "sub_issue": null,
+          "company": "Company 5",
+          "company_public_response": null,
+          "company_response": "Closed with monetary relief",
+          "state": "FL",
+          "zip_code": "857XX",
+          "tags": null,
+          "submitted_via": "Referral",
+          "timely": "No"
+        },
+        "sort": [
+          1791331200000,
+          "9000036"
+        ]
+      },
+      {
+        "_index": "complaint-public-v2",
+        "_id": "9000037",
+        "_score": null,
+        "_source": {
+          "complaint_id": "9000037",
+          "date_received": "2026-10-08",
+          "date_sent_to_company": "2026-10-11",
+          "product": "Product B",
+          "sub_product": null,
+          "issue": "Issue three",
+          "sub_issue": null,
+          "company": "Company 3",
+          "company_public_response": null,
+          "company_response": "Closed with explanation",
+          "state": "IL",
+          "zip_code": "776XX",
+          "tags": null,
+          "submitted_via": "Referral",
+          "timely": "No"
+        },
+        "sort": [
+          1791417600000,
+          "9000037"
+        ]
+      },
+      {
+        "_index": "complaint-public-v2",
+        "_id": "9000038",
+        "_score": null,
+        "_source": {
+          "complaint_id": "9000038",
+          "date_received": "2026-10-09",
+          "date_sent_to_company": "2026-10-12",
+          "product": "Product C",
+          "sub_product": null,
+          "issue": "Issue three",
+          "sub_issue": null,
+          "company": "Company 4",
+          "company_public_response": null,
+          "company_response": "Closed with explanation",
+          "state": "CA",
+          "zip_code": "214XX",
+          "tags": null,
+          "submitted_via": "Referral",
+          "timely": "Yes"
+        },
+        "sort": [
+          1791504000000,
+          "9000038"
+        ]
+      },
+      {
+        "_index": "complaint-public-v2",
+        "_id": "9000039",
+        "_score": null,
+        "_source": {
+          "complaint_id": "9000039",
+          "date_received": "2026-10-10",
+          "date_sent_to_company": "2026-10-10",
+          "product": "Product B",
+          "sub_product": null,
+          "issue": "Issue two",
+          "sub_issue": null,
+          "company": "Company 4",
+          "company_public_response": null,
+          "company_response": "Closed with explanation",
+          "state": "CA",
+          "zip_code": "723XX",
+          "tags": null,
+          "submitted_via": "Web",
+          "timely": "Yes"
+        },
+        "sort": [
+          1791590400000,
+          "9000039"
+        ]
+      },
+      {
+        "_index": "complaint-public-v2",
+        "_id": "9000012",
+        "_score": null,
+        "_source": {
+          "complaint_id": "9000012",
+          "date_received": "2026-10-13",
+          "date_sent_to_company": "2026-10-15",
+          "product": "Product A",
+          "sub_product": null,
+          "issue": "Issue two",
+          "sub_issue": null,
+          "company": "Company 4",
+          "company_public_response": null,
+          "company_response": "Closed with relief",
+          "state": "IL",
+          "zip_code": "363XX",
+          "tags": null,
+          "submitted_via": "Referral",
+          "timely": "No"
+        },
+        "sort": [
+          1791849600000,
+          "9000012"
+        ]
+      }
+    ]
+  },
+  "page": 2
+}

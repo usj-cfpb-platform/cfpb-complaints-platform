@@ -1,0 +1,43 @@
+Date received,Product,Sub-product,Issue,Sub-issue,Company public response,Company,State,ZIP code,Tags,Consumer consent provided?,Submitted via,Date sent to company,Company response to consumer,Timely response?,Consumer disputed?,Complaint ID
+2026-10-01,Product A,,Issue three,,,Company 5,IL,882XX,,,Web,2026-10-01,Closed with monetary relief,No,,9000000
+2026-10-02,Product B,,Issue one,,,Company 4,NY,127XX,,,Phone,2026-10-02,In progress,No,,9000001
+2026-10-03,Product C,,Issue two,,,Company 2,FL,253XX,,,Referral,2026-10-06,Closed with explanation,Yes,,9000002
+2026-10-04,Product A,,Issue two,,,Company 4,,755XX,,,Web,2026-10-06,Closed with monetary relief,No,,9000003
+2026-10-05,Product B,,Issue three,,,Company 4,NY,724XX,,,Web,2026-10-06,In progress,Yes,,9000004
+2026-10-06,Product A,,Issue two,,,Company 5,TX,796XX,,,Web,2026-10-07,Closed with explanation,No,,9000005
+2026-10-07,Product A,,Issue one,,,Company 4,TX,935XX,,,Web,2026-10-09,In progress,Yes,,9000006
+2026-13-45,Product A,,Issue one,,,Company 4,IL,534XX,,,Phone,2026-10-09,Closed with monetary relief,No,,9000007
+2026-10-09,Product B,,Issue three,,,Company 3,TX,903XX,,,Referral,2026-10-10,In progress,Yes,,9000008
+2026-10-10,Product B,,Issue one,,,Company 3,CA,921XX,,,Referral,2026-10-13,Closed with monetary relief,No,,9000009
+2026-10-11,Product B,,"Issue with a
+line break",,,Company 3,NY,722XX,,,Referral,2026-10-12,Closed with monetary relief,No,,9000010
+2026-10-12,Product C,,Issue three,,,Company 2,CA,944XX,,,Referral,2026-10-15,In progress,No,,9000011
+2026-10-13,Product A,,Issue two,,,Company 4,IL,363XX,,,Referral,2026-10-15,Closed with explanation,No,,9000012
+2026-10-14,Product A,,Issue one,,,Company 1,NY,773XX,,,Phone,2026-10-16,Closed with monetary relief,No,,9000013
+2026-10-15,Product A,,Issue three,,,Company 2,NY,631XX,,,Web,2026-10-15,Closed with monetary relief,Yes,,9000014
+2026-10-16,Product C,,Issue two,,,Company 4,CA,129XX,,,Phone,2026-10-18,Closed with explanation,No,,9000015
+2026-10-17,Product B,,Issue two,,,Company 2,NY,983XX,,,Phone,2026-10-17,Closed with explanation,Yes,,9000016
+2026-10-18,Product B,,Issue two,,,Company 3,FL,838XX,,,Phone,2026-10-18,In progress,Yes,,9000017
+2026-10-19,Product A,,Issue two,,,Company 3,CA,842XX,,,Phone,2026-10-22,Closed with monetary relief,Yes,,9000018
+2026-10-20,Product B,,Issue one,,,Company 2,FL,287XX,,,Referral,2026-10-22,Closed with explanation,No,,9000019
+2026-10-21,Product C,,Issue one,,,Company 4,CA,691XX,,,Phone,2026-10-22,Closed with explanation,Yes,,9000020
+2026-10-22,Product A,,Issue two,,,Company 3,IL,927XX,,,Referral,2026-10-24,Closed with monetary relief,Yes,,9000021
+2026-10-23,Product C,,Issue one,,,Company 3,FL,381XX,,,Phone,2026-10-24,Closed with monetary relief,No,,9000022
+2026-10-24,Product C,,Issue three,,,Company 5,TX,263XX,,,Phone,2026-10-27,Closed with monetary relief,No,,9000023
+2026-10-25,Product B,,Issue three,,,Company 2,FL,931XX,,,Phone,2026-10-28,Closed with monetary relief,Yes,,9000024
+2026-10-26,Product A,,Issue three,,,Company 5,NY,549XX,,,Phone,2026-10-27,In progress,Yes,,9000025
+2026-10-27,Product C,,Issue one,,,Company 4,FL,173XX,,,Referral,2026-10-27,Closed with explanation,No,,9000026
+2026-10-28,Product B,,Issue one,,,Company 2,FL,227XX,,,Web,2026-10-29,Closed with explanation,No,,9000027
+2026-10-29,Product B,,Issue three,,,Company 3,NY,895XX,,,Phone,2026-10-29,Closed with monetary relief,Yes,,9000028
+2026-10-30,Product B,,Issue two,,,Company 1,FL,862XX,,,Phone,2026-10-30,Closed with explanation,No,,9000029
+2026-10-01,Product B,,Issue two,,,Company 4,IL,587XX,,,Referral,2026-10-01,Closed with monetary relief,No,,9000030
+2026-10-02,Product A,,Issue two,,,Company 1,CA,181XX,,,Web,2026-10-03,Closed with explanation,No,,9000031
+2026-10-03,Product C,,Issue two,,,Company 2,NY,517XX,,,Phone,2026-10-03,Closed with explanation,Yes,,9000032
+2026-10-04,Product C,,Issue three,,,Company 4,CA,160XX,,,Web,2026-10-07,Closed with monetary relief,No,,9000033
+2026-10-05,Product B,,Issue one,,,Company 4,FL,181XX,,,Phone,2026-10-05,Closed with explanation,No,,9000034
+2026-10-06,Product C,,Issue two,,,Company 2,NY,997XX,,,Referral,2026-10-08,Closed with monetary relief,No,,9000035
+2026-10-07,Product C,,Issue one,,,Company 5,FL,857XX,,,Referral,2026-10-08,Closed with monetary relief,No,,9000036
+2026-10-08,Product B,,Issue three,,,Company 3,IL,776XX,,,Referral,2026-10-11,Closed with explanation,No,,9000037
+2026-10-09,Product C,,Issue three,,,Company 4,CA,214XX,,,Referral,2026-10-12,Closed with explanation,Yes,,9000038
+2026-10-10,Product B,,Issue two,,,Company 4,CA,723XX,,,Web,2026-10-10,Closed with explanation,Yes,,9000039
+2026-10-13,Product A,,Issue two,,,Company 4,IL,363XX,,,Referral,2026-10-15,Closed with relief,No,,9000012

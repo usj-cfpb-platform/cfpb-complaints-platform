@@ -51,6 +51,18 @@ services:
         condition: service_started
     restart: "no"
 
+  ingestion:
+    # On-demand collectors (Turn 2); not started by `docker compose up` (profile "tools").
+    #   docker compose run --rm ingestion python -m ingestion.historical
+    #   docker compose run --rm ingestion python -m ingestion.incremental --product "<label>"
+    <<: *python-app
+    profiles: ["tools"]
+    command: ["python", "-m", "ingestion.discovery", "--help"]
+    depends_on:
+      storage-init:
+        condition: service_completed_successfully
+    restart: "no"
+
   spark:
     # Default command is a smoke test (write + read Parquet on MinIO), then exits.
     # Real jobs: docker compose run --rm spark python -m processing.<job>

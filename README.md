@@ -66,6 +66,32 @@ docker compose down -v            # reset: stop and DELETE all local data
 python -m pip install -r requirements-dev.txt && python -m pytest   # unit tests
 ```
 
+## Data acquisition (Turn 2)
+
+Collectors run inside the Compose network and read credentials from `.env`. Start the stack first
+(`docker compose up -d --build`). Local scratch space: about 1.3x the size of the CSV plus the ZIP.
+
+```
+# 0. Cheap look at the source: ZIP size, real CSV header and date formats (reads ~256 KB)
+docker compose run --rm ingestion python -m ingestion.historical --inspect
+
+# 1. Historical load: ZIP + extracted CSV + manifest.json into MinIO (safe to rerun; skips if unchanged)
+docker compose run --rm ingestion python -m ingestion.historical
+docker compose run --rm ingestion python -m ingestion.historical --dry-run   # plan only
+
+# 2. Incremental collection (needs domain.products in config/settings.yaml, or --product "<label>")
+docker compose run --rm ingestion python -m ingestion.incremental --dry-run --product "<label>"
+docker compose run --rm ingestion python -m ingestion.incremental
+
+# 3. Bring runs collected by the scheduled GitHub workflow into MinIO (needs GITHUB_TOKEN)
+docker compose run --rm -e GITHUB_TOKEN ingestion python -m ingestion.sync_artifacts
+
+# 4. List completed batches (what Spark may read)
+docker compose run --rm ingestion python -m ingestion.discovery
+```
+
+Details, troubleshooting and the Spark hand-off contract: `docs/MAROUN_TURN2_REPORT.md`.
+
 ## Status
 
 | Layer | Owner | Status |

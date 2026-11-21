@@ -23,6 +23,22 @@ incremental:
   timeout_seconds: 60
   max_retries: 5
   backoff_base_seconds: 2
+  # Turn 2 additions (verified against the CFPB OpenAPI spec, cfpb/ccdb5-api swagger-config.yaml):
+  page_size: 100                       # API maximum for `size` is 100
+  sort: created_date_desc              # same ordering as the Turn 1 API probe
+  max_pages: 2000                      # safety bound per run; reaching it makes the run 'partial'
+  request_delay_seconds: 0.2           # rate limits are undocumented: stay sequential and polite
+  date_max_exclusive: true             # spec: date_received_max is exclusive (we send max + 1 day)
+
+historical:
+  # Streaming download of the full CSV ZIP (Turn 2).
+  timeout_seconds: 60
+  max_retries: 5
+  backoff_base_seconds: 2
+  chunk_bytes: 1048576                 # 1 MiB: constant memory, whatever the file size
+  tmp_dir: data/tmp                    # needs room for the ZIP plus the extracted CSV (git-ignored)
+  expected_member: complaints.csv
+  required_columns: ["Complaint ID", "Date received"]
 
 storage:
   # Object prefixes inside the MinIO bucket (brief section 8.3).
@@ -30,6 +46,7 @@ storage:
   raw_api_prefix: "raw/cfpb/api"
   curated_prefix: "curated/complaints"
   quality_prefix: "quality"
+  high_water_mark_key: "state/high_water_mark.json"
 
 privacy:
   min_cell_size: 10   # small-cell suppression threshold (k)
