@@ -133,7 +133,7 @@ def parse_date_received(value: Any) -> str | None:
     if isinstance(value, str):
         match = _DATE_PREFIX.match(value.strip())
         return match.group(1) if match else None
-    if isinstance(value, (int, float)) and not isinstance(value, bool):
+    if isinstance(value, int | float) and not isinstance(value, bool):
         seconds = value / 1000 if abs(value) > 1e11 else value
         try:
             return datetime.fromtimestamp(seconds, UTC).strftime("%Y-%m-%d")
