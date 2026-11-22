@@ -1,3 +1,4 @@
+$content = @'
 name: CI
 
 on:
@@ -27,6 +28,12 @@ jobs:
           cache: pip
           cache-dependency-path: requirements-dev.txt
 
+      # Spark 3.5 needs Java 17 (same as docker/spark/Dockerfile); newer runner defaults fail.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
       - name: Install dev tools
         run: python -m pip install -r requirements-dev.txt
 
@@ -47,3 +54,6 @@ jobs:
           else
             echo "No docker-compose.yml yet - skipping"
           fi
+'@
+[IO.File]::WriteAllText("$PWD\.github\workflows\ci.yml", ($content -replace "`r`n", "`n") + "`n")
+git diff
