@@ -1,6 +1,6 @@
 # Data dictionary - curated complaint record
 
-Status: v0.2. Based on the API probe of 2026-11-12 (Turn 1) and the real CSV header, confirmed on
+Status: v0.3 (Turn 3: Spark output columns, decided dedup rule, label timeline). Based on the API probe of 2026-11-12 (Turn 1) and the real CSV header, confirmed on
 2026-11-19 with `python -m ingestion.historical --inspect` (Turn 2; see the live results below). Field names follow the cohort standard:
 snake_case CFPB API names.
 
@@ -38,10 +38,32 @@ Narratives are not in the published data since September 2026 and are out of sco
 | `source` | `full_load` / `api` | Path that produced the record |
 | `source_run_id` | string | `run_id` of the raw data used |
 | `ingested_at` | timestamp UTC | When the raw data was collected |
-| `record_hash` | string | Hash of the source fields, to detect records that changed between runs |
+| `record_hash` | string | SHA-256 of the source fields, to detect records that changed between runs |
+| `option` | integer | Brief option number (15) |
+| `segment` | string | Analytical group added by Spark: `deposit_accounts` or `transfers_payments` (`config/settings.yaml`). The original `product` label is kept unchanged |
+| `state_is_valid` | boolean or null | `state` is a code in `config/reference/states.csv`; null when `state` is missing |
+| `routing_lag_status` | string | `ok`, `negative` (sent before received), `missing_sent_date`, `invalid_sent_date` |
+| `quality_flags` | array of strings | Problems kept on the record: `invalid_state`, `invalid_timely`, `missing_date_sent_to_company`, `invalid_date_sent_to_company`, `negative_routing_lag` |
 
-Deduplication tie-break (proposal, decided in Turn 3): keep the record from the most recent
-`ingested_at`; if equal, prefer `api` over `full_load`.
+`routing_lag_days` is null unless both dates are valid; negative values are kept (flagged) but
+excluded from the lag statistics. Deduplication rule (decided in Turn 3, D-013): keep the record
+with the most recent `ingested_at`; if equal, prefer `api` over `full_load`; then the highest
+`record_hash` (deterministic).
+
+## Option 15 product labels (confirmed 2026-11-22, `processing.job --list-labels`)
+
+CFPB renamed its products in April 2017; the scope lists the old and the new labels.
+
+| Product label (as published) | Segment | Rows | First received | Last received |
+|---|---|---|---|---|
+| Bank account or service | deposit_accounts | 86,198 | 2012-03-01 | 2017-04-22 |
+| Checking or savings account | deposit_accounts | 415,023 | 2017-04-21 | 2026-11-20 |
+| Money transfers | transfers_payments | 5,354 | 2013-04-04 | 2017-04-21 |
+| Virtual currency | transfers_payments | 18 | 2014-08-15 | 2017-04-03 |
+| Money transfer, virtual currency, or money service | transfers_payments | 199,386 | 2017-04-24 | 2026-11-20 |
+
+Not included: `Other financial service` (1,056 rows, 2014-2017; mixes money orders and check
+cashing with unrelated services) and `Prepaid card` (another option of the brief).
 
 ## Turn 2 verification status (2026-11-14)
 

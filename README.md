@@ -92,13 +92,42 @@ docker compose run --rm ingestion python -m ingestion.discovery
 
 Details, troubleshooting and the Spark hand-off contract: `docs/MAROUN_TURN2_REPORT.md`.
 
+## Spark processing and data quality (Turn 3)
+
+Option 15 (checking and savings accounts + money transfers and digital payments). The job reads
+every complete raw batch, cleans and filters it, removes duplicate Complaint IDs, checks six quality
+dimensions against `config/quality_rules.yaml` (tag `dq-thresholds-v1`) and writes curated Parquet
+only if the quality gate does not fail.
+
+```
+# Product labels in the raw data (historical label timeline)
+docker compose run --rm spark python -m processing.job --list-labels
+
+# Measure everything, write nothing
+docker compose run --rm spark python -m processing.job --dry-run
+
+# Full run: curated/, aggregates, quarantine/ and quality/ in MinIO
+docker compose run --rm spark python -m processing.job
+
+# Quality-gate demonstration: inject N duplicate records; the gate must FAIL and write nothing
+docker compose run --rm spark python -m processing.job --inject-defect 100
+
+# Development without MinIO (committed sample, writes to data/processing_out/)
+docker compose run --rm spark python -m processing.job --sample
+
+# Spark tests (also run in CI)
+docker compose run --rm spark sh -c "pip install -q pytest==8.3.4 && python -m pytest -q tests/unit/test_processing_rules.py tests/unit/test_processing_spark.py"
+```
+
+Results of the first real run, decisions and the hand-off to Turn 4: `docs/ALI_TURN3_REPORT.md`.
+
 ## Status
 
 | Layer | Owner | Status |
 |---|---|---|
-| Foundation | Mhamad | In progress |
-| Acquisition + raw | Maroun | Not started |
-| Spark + data quality | Ali | Not started |
+| Foundation | Mhamad | Done (Turn 1) |
+| Acquisition + raw | Maroun | Done (Turn 2, PR #18) |
+| Spark + data quality | Ali | Done (Turn 3), in review |
 | MongoDB + integration | Mhamad | Not started |
 | Analysis | Maroun | Not started |
 | Dashboard | Ali | Not started |
