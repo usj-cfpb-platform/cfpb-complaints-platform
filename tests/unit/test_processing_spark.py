@@ -122,7 +122,7 @@ def api_batch(tmp_path: Path, records: list[dict], run_id: str, ingested: str) -
     return InputBatch(source="api", run_id=run_id, ingested_at=ingested, paths=[str(page)])
 
 
-def run_job(spark, batches, tmp_path=None, scope=SCOPE, rules=None):
+def run_job(spark, batches, tmp_path=None, scope=SCOPE, rules=None, inject_defect=0):
     output = None
     if tmp_path is not None:
         out = tmp_path / "out"
@@ -137,6 +137,7 @@ def run_job(spark, batches, tmp_path=None, scope=SCOPE, rules=None):
         today=TODAY,
         run_id=job.new_run_id(__import__("datetime").datetime(2026, 11, 22, 10, 0, 0)),
         output=output,
+        inject_defect=inject_defect,
     )
 
 
@@ -313,3 +314,14 @@ def test_manifest_mismatch_fails_the_gate_and_blocks_curated_write(spark, tmp_pa
     assert not (tmp_path / "out" / "curated").exists()
     reports = list((tmp_path / "out" / "quality").glob("run_id=*/quality_report.json"))
     assert len(reports) == 1  # the failure itself is still documented
+
+
+def test_injected_duplicate_defect_is_caught_and_nothing_is_written(spark, tmp_path) -> None:
+    path = write_csv(tmp_path / "x.csv", [row(str(i)) for i in range(1, 11)])
+    report = run_job(spark, [csv_batch(path)], tmp_path, inject_defect=3)
+    assert report["injected_defect"] == {"type": "duplicate_curated_ids", "rows": 3}
+    assert report["gate"]["status"] == quality.FAIL
+    assert "uniqueness.curated_duplicate_ids" in report["gate"]["failed_checks"]
+    assert "reconciliation.unbalanced_rows" in report["gate"]["failed_checks"]
+    assert report["outputs_written"] is False
+    assert not (tmp_path / "out" / "curated").exists()

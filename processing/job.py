@@ -98,6 +98,7 @@ def run(
     output: Output | None,
     min_cell: int = 10,
     code_version: str = "unknown",
+    inject_defect: int = 0,
 ) -> dict[str, Any]:
     """Process the batches and return the quality report. Writes only if ``output`` is given
     and the gate does not fail."""
@@ -162,9 +163,14 @@ def run(
     )
     winners = valid.where(F.col("version_rank") == 1)
     final = winners.where(T.in_scope(scope))
-    curated = (
-        T.derive(final, scope).select(*T.CURATED_COLUMNS).persist(StorageLevel.MEMORY_AND_DISK)
-    )
+    curated = T.derive(final, scope).select(*T.CURATED_COLUMNS)
+    if inject_defect:
+        # Deliberate defect for the quality-gate demonstration (brief 6.3): simulate a broken
+        # deduplication step by appending copies of existing curated records. The gate must catch
+        # it (duplicate Complaint IDs, unbalanced reconciliation) and refuse to write.
+        LOG.warning("INJECTING %d duplicate curated records (quality-gate demo)", inject_defect)
+        curated = curated.unionByName(curated.orderBy("complaint_id").limit(inject_defect))
+    curated = curated.persist(StorageLevel.MEMORY_AND_DISK)
 
     counts = {
         "raw_rows": raw_rows,
@@ -212,6 +218,9 @@ def run(
             "issues": list(scope.issues),
         },
         "rules_version": rules.get("version"),
+        "injected_defect": (
+            {"type": "duplicate_curated_ids", "rows": inject_defect} if inject_defect else None
+        ),
         "inputs": [{k: v for k, v in asdict(b).items() if k != "header"} for b in batches],
         "gate": decision,
         "dimensions": quality.checks_by_dimension(checks),
@@ -515,6 +524,13 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--rules", default=str(quality.DEFAULT_RULES_PATH))
     parser.add_argument("--config", default=None, help="settings YAML")
     parser.add_argument("--today", default=None, help="run date YYYY-MM-DD (default: UTC today)")
+    parser.add_argument(
+        "--inject-defect",
+        type=int,
+        default=0,
+        metavar="N",
+        help="demo only: add N duplicate curated records; the quality gate must fail",
+    )
     args = parser.parse_args(argv)
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(message)s")
 
@@ -543,6 +559,11 @@ def main(argv: list[str] | None = None) -> int:
         spark = get_spark("cfpb-processing")
 
     try:
+        if not batches:
+            print(
+                "NOTHING TO PROCESS: no complete raw batch (run ingestion first)", file=sys.stderr
+            )
+            return 2
         if args.list_labels:
             return _list_labels(spark, batches, states, today)
 
@@ -562,6 +583,7 @@ def main(argv: list[str] | None = None) -> int:
             output=output,
             min_cell=int((settings.get("privacy") or {}).get("min_cell_size", 10)),
             code_version=code_version(),
+            inject_defect=args.inject_defect,
         )
         _print_summary(report)
         if args.sample:
