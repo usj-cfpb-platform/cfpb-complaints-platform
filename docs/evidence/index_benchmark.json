@@ -1,0 +1,165 @@
+{
+  "generated_at": "2026-11-23T10:19:53+00:00",
+  "documents": 706024,
+  "runs": 5,
+  "before": [
+    {
+      "query": "Monthly trend, transfers, 2023-2025",
+      "filters": {
+        "segment": "transfers_payments",
+        "date_from": "2023-01-01",
+        "date_to": "2025-12-31"
+      },
+      "access": "COLLSCAN",
+      "index": "-",
+      "docs_examined": 706024,
+      "keys_examined": 0,
+      "returned": 115119,
+      "explain_ms": 1004,
+      "median_ms": 957.2
+    },
+    {
+      "query": "Issue mix, deposits, California, 2024",
+      "filters": {
+        "segment": "deposit_accounts",
+        "state": "CA",
+        "date_from": "2024-01-01",
+        "date_to": "2024-12-31"
+      },
+      "access": "COLLSCAN",
+      "index": "-",
+      "docs_examined": 706024,
+      "keys_examined": 0,
+      "returned": 7973,
+      "explain_ms": 915,
+      "median_ms": 850.0
+    },
+    {
+      "query": "Company response, deposits, one product, 2025",
+      "filters": {
+        "segment": "deposit_accounts",
+        "product": "Checking or savings account",
+        "date_from": "2025-01-01",
+        "date_to": "2025-12-31"
+      },
+      "access": "COLLSCAN",
+      "index": "-",
+      "docs_examined": 706024,
+      "keys_examined": 0,
+      "returned": 84195,
+      "explain_ms": 972,
+      "median_ms": 998.0
+    },
+    {
+      "query": "Timely %, transfers, Web channel, 2022-2025",
+      "filters": {
+        "segment": "transfers_payments",
+        "channel": "Web",
+        "date_from": "2022-01-01",
+        "date_to": "2025-12-31"
+      },
+      "access": "COLLSCAN",
+      "index": "-",
+      "docs_examined": 706024,
+      "keys_examined": 0,
+      "returned": 122813,
+      "explain_ms": 1086,
+      "median_ms": 1005.6
+    },
+    {
+      "query": "Routing lag, transfers, last 12 months",
+      "filters": {
+        "segment": "transfers_payments",
+        "date_from": "2025-11-01",
+        "date_to": "2026-10-31"
+      },
+      "access": "COLLSCAN",
+      "index": "-",
+      "docs_examined": 706024,
+      "keys_examined": 0,
+      "returned": 39257,
+      "explain_ms": 817,
+      "median_ms": 849.8
+    }
+  ],
+  "after": [
+    {
+      "query": "Monthly trend, transfers, 2023-2025",
+      "filters": {
+        "segment": "transfers_payments",
+        "date_from": "2023-01-01",
+        "date_to": "2025-12-31"
+      },
+      "access": "IXSCAN",
+      "index": "ix_segment_channel_date, ix_segment_company_date, ix_segment_date, ix_segment_issue_date, ix_segment_product_date, ix_segment_state_date",
+      "docs_examined": 115119,
+      "keys_examined": 115119,
+      "returned": 115119,
+      "explain_ms": 438,
+      "median_ms": 401.6
+    },
+    {
+      "query": "Issue mix, deposits, California, 2024",
+      "filters": {
+        "segment": "deposit_accounts",
+        "state": "CA",
+        "date_from": "2024-01-01",
+        "date_to": "2024-12-31"
+      },
+      "access": "IXSCAN",
+      "index": "ix_segment_channel_date, ix_segment_company_date, ix_segment_date, ix_segment_issue_date, ix_segment_product_date, ix_segment_state_date",
+      "docs_examined": 7973,
+      "keys_examined": 7973,
+      "returned": 7973,
+      "explain_ms": 36,
+      "median_ms": 36.9
+    },
+    {
+      "query": "Company response, deposits, one product, 2025",
+      "filters": {
+        "segment": "deposit_accounts",
+        "product": "Checking or savings account",
+        "date_from": "2025-01-01",
+        "date_to": "2025-12-31"
+      },
+      "access": "IXSCAN",
+      "index": "ix_segment_channel_date, ix_segment_company_date, ix_segment_date, ix_segment_issue_date, ix_segment_product_date, ix_segment_state_date",
+      "docs_examined": 84195,
+      "keys_examined": 84195,
+      "returned": 84195,
+      "explain_ms": 305,
+      "median_ms": 304.7
+    },
+    {
+      "query": "Timely %, transfers, Web channel, 2022-2025",
+      "filters": {
+        "segment": "transfers_payments",
+        "channel": "Web",
+        "date_from": "2022-01-01",
+        "date_to": "2025-12-31"
+      },
+      "access": "IXSCAN",
+      "index": "ix_segment_channel_date, ix_segment_company_date, ix_segment_date, ix_segment_issue_date, ix_segment_product_date, ix_segment_state_date",
+      "docs_examined": 122813,
+      "keys_examined": 122813,
+      "returned": 122813,
+      "explain_ms": 558,
+      "median_ms": 474.9
+    },
+    {
+      "query": "Routing lag, transfers, last 12 months",
+      "filters": {
+        "segment": "transfers_payments",
+        "date_from": "2025-11-01",
+        "date_to": "2026-10-31"
+      },
+      "access": "IXSCAN",
+      "index": "ix_segment_channel_date, ix_segment_company_date, ix_segment_date, ix_segment_issue_date, ix_segment_product_date, ix_segment_state_date",
+      "docs_examined": 39257,
+      "keys_examined": 39257,
+      "returned": 39257,
+      "explain_ms": 189,
+      "median_ms": 165.0
+    }
+  ]
+}
