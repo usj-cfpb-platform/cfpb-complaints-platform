@@ -6,3 +6,5 @@ PyYAML==6.0.2
 jsonschema==4.23.0
 requests==2.32.3
 pyspark==3.5.3
+# pymongo: Turn 4 serving-layer tests (same version as requirements.txt).
+pymongo==4.10.1
