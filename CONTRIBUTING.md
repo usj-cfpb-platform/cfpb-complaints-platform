@@ -21,8 +21,10 @@ How our team of three works so every contribution is visible and reviewed.
 ## 4. Pull requests
 - Fill in the PR template: what, why, how tested, evidence, handoff notes.
 - Link the issue: `Closes #12`.
-- At least **one approving review from another member**. Reviews contain real comments
-  (questions, risks, suggestions), not only "LGTM".
+- Code owners (`.github/CODEOWNERS`) are requested as reviewers automatically.
+- An approval is **recommended, not required** (team decision, 2026-11-13: approvals were
+  blocking a sequential 3-person schedule). Every PR still gets **at least one real review
+  comment from another member** (a question, risk or "tested on my machine"), even after merge.
 - CI must pass before merge. Merge with a merge commit (history keeps each commit).
 
 ## 5. Issues and board
