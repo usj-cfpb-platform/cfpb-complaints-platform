@@ -99,3 +99,8 @@ Redis cache (no measured latency problem; listed as future work).
 | D-016 | 2026-11-22 | Quality thresholds pre-registered in `config/quality_rules.yaml`, tagged `dq-thresholds-v1` before the first real run; FAIL blocks curated writes | Brief 6.3: results must not move the bar | tag `dq-thresholds-v1` (commit dfc508e) |
 | D-017 | 2026-11-22 | Records with a negative routing lag or invalid state are kept and flagged (`quality_flags`), not rejected | They are real complaints; only the interval or the code is wrong | 480 negative lags (all 1 day, 2013), 75 invalid states |
 | D-018 | 2026-11-22 | Curated path `option=<n>` instead of `domain=<slug>` | Brief V2 names curated outputs by option number | `docs/data_contracts.md` section 7 |
+| D-019 | 2026-11-23 | MongoDB loaded with pymongo bulk upserts from Spark `toLocalIterator`, not the MongoDB Spark connector | No image rebuild (slow network), exact insert/update/unchanged counts via `record_hash` | `database/load.py` |
+| D-020 | 2026-11-23 | Flat, fully embedded complaint documents; BSON `Date` for dates | Session 4.1 embed-vs-reference check; range filters on dates | `docs/mongodb.md` sections 2-3 |
+| D-021 | 2026-11-23 | Compound indexes `segment + category + date_received` (Equality-Sort-Range) | Mirror the dashboard filters | `docs/evidence/index_benchmark.md` |
+| D-022 | 2026-11-23 | Loader refuses a failed quality gate and prunes ids no longer curated only after a full, matching read | Serving layer must equal curated; never delete on a partial read | `database/documents.py`, reconciliation reports |
+| D-023 | 2026-11-23 | Aggregates replaced by temp collection + rename | Dashboard never reads a half-written aggregate | `database/load.py` `replace_aggregate` |
