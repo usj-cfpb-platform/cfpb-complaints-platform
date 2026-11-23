@@ -391,6 +391,7 @@ risk 1) and `next_cursor` is the single function to adjust.
 | `ingestion.discovery` | `COMPLETE full full_20261119T132939Z_439355 records=19281923`; `1 complete, 0 incomplete` |
 | Rerun of `historical` | `skipped_up_to_date` (same ETag), nothing downloaded |
 | `pytest tests/integration` (real MinIO) | first run: 1 passed, 2 failed because the test layout used a prefix that the contract schemas reject (a test bug, fixed by a `PrefixedStore` wrapper, commit `2769a4d`); second run: **3 passed** |
+| Independent reproduction by teammates (empty environment, README only) | Ali Srour, 2026-11-22: 19,371,701 records. Mhamad Naser Dine, 2026-11-23: run `full_20261123T092410Z_e778e4`, **19,378,282 records**. Both counts differ from the author's 19,281,923 (2026-11-19) because CFPB keeps adding complaints to the published file; each run reflects the file as published on its own day. |
 
 Lessons recorded: the collector Docker image does not contain pytest (install it in a throwaway
 container, as shown above); the extracted CSV is much larger than the ZIP (5.4 GiB), so disk space
@@ -559,8 +560,9 @@ the workflow, `requirements-collector.txt`, 3 sample files, 5 unit-test files pl
 **Related issues** (close by number once you see them on the board): Historical loader; Incremental
 API collector; Scheduled collection on GitHub Actions; Sync collected runs from GitHub artifacts;
 Development sample and sampling script; Collector tests with a mock API. **Leave open:** Risk: full
-CSV download (needs your measurement); Verify CSV header and API date formats (needs live check);
-the "second member repeats the load from an empty environment" criterion.
+CSV download (needs your measurement); Verify CSV header and API date formats (needs live check).
+The "second member repeats the load from an empty environment" criterion was met afterwards by Ali
+(2026-11-22) and Mhamad (2026-11-23); see section 8.4.
 
 **Proposed PR description**
 
@@ -602,7 +604,7 @@ the "second member repeats the load from an empty environment" criterion.
 | Spark hand-off documented | COMPLETED AND VERIFIED (documentation) | report 11, contracts 6 | discovery tests | Ali to confirm |
 | Risk issue: measure ZIP size, choose who downloads | COMPLETED AND VERIFIED (measurement); decision pending | `--inspect` | ZIP 0.37 GB; one real download took about 1 h on a slow connection | team to decide who downloads and when |
 | Verify CSV header and API date formats; update dictionary | CSV part COMPLETED AND VERIFIED; API part BLOCKED | `data_dictionary.md` | real header (15 columns) and `YYYY-MM-DD` dates recorded | API date format and cursor need the team's product label |
-| A second member repeats the load using only the README | NOT COMPLETED | README section added | | needs a teammate |
+| A second member repeats the load using only the README | COMPLETED AND VERIFIED (by teammates) | README section | Ali 2026-11-22 (19,371,701 records); Mhamad 2026-11-23, run `full_20261123T092410Z_e778e4` (19,378,282 records); see section 8.4 | counts differ by day because the source file grows |
 | Turn 5 not implemented; teammates' code untouched | COMPLETED AND VERIFIED | | `git status`: no change in `processing/`, `database/`, `analytics/`, `dashboard/`, `common/` | |
 
 ## 15. Oral presentation preparation
