@@ -6,11 +6,32 @@ project:
   cohort_standard_version: "0.1"
 
 domain:
-  # DOMAIN NEEDED: set when the lecturer assigns our domain.
-  # `products` must list the exact CFPB `product` labels, including historical
-  # labels that were renamed over time (see the taxonomy timeline, Turn 3).
-  slug: unassigned
-  products: []
+  # Option 15 of the brief: "Access to deposited and transferred funds" - checking and savings
+  # accounts + money transfers and digital payments. Focus: how do reported delays and problems
+  # accessing funds differ between deposit accounts and transfers?
+  # `products` lists the exact CFPB `product` labels, including the labels used before CFPB renamed
+  # its products in April 2017. Checked against the real CSV with
+  # `python -m processing.job --list-labels` (label timeline in every quality report).
+  option: 15
+  slug: funds-access
+  products:
+    - "Checking or savings account"
+    - "Bank account or service"
+    - "Money transfer, virtual currency, or money service"
+    - "Money transfers"
+    - "Virtual currency"
+  # Analytical segments (added column `segment`; the original product label is always kept).
+  segments:
+    deposit_accounts:
+      - "Checking or savings account"
+      - "Bank account or service"
+    transfers_payments:
+      - "Money transfer, virtual currency, or money service"
+      - "Money transfers"
+      - "Virtual currency"
+  # Optional narrower filters (brief 6.3 step 4). Empty = the whole product scope.
+  sub_products: []
+  issues: []
 
 source:
   full_csv_url: "https://files.consumerfinance.gov/ccdb/complaints.csv.zip"

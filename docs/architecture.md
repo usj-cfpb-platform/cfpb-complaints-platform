@@ -29,7 +29,7 @@ flowchart TB
     end
 
     subgraph Curated["Curated zone - MinIO"]
-        CP["curated/complaints/domain=.../<br/>year=/month= (Snappy Parquet)"]
+        CP["curated/complaints/option=15/<br/>year=/month= (Snappy Parquet)<br/>+ curated/aggregates/option=15/"]
         QR["quality/run_id=.../quality_report.json"]
     end
 
@@ -92,3 +92,10 @@ Redis cache (no measured latency problem; listed as future work).
 | D-009 | 2026-11-14 | Compare unique records fetched with API `hits.total`; mismatch makes the run `partial` | Guards against skipped records if `search_after` cursors misbehave (D-004) | `tests/unit/test_incremental.py` |
 | D-010 | 2026-11-14 | Scheduled runner is stateless; `sync_artifacts` moves the MinIO high-water mark | Runner cannot reach MinIO; wide lookback makes each run self-sufficient | `.github/workflows/incremental-collection.yml` |
 | D-011 | 2026-11-14 | Skip a historical reload when ETag (or Last-Modified + size) is unchanged; never overwrite stored objects | Avoids re-downloading a multi-GB file; contract says raw is write-once | `tests/unit/test_historical.py` |
+| D-012 | 2026-11-22 | Option 15 scope = 5 product labels (old + new), split into `deposit_accounts` / `transfers_payments`; `Other financial service` excluded | Label timeline shows the April 2017 renaming; the focus question compares the two segments | `--list-labels` on run `full_20261122T132122Z_9c8cbf` |
+| D-013 | 2026-11-22 | Dedup: newest `ingested_at`, then `api` over `full_load`, then highest `record_hash` | Newest publication wins; deterministic on ties | `tests/unit/test_processing_spark.py` |
+| D-014 | 2026-11-22 | Read CSV columns by name with an all-string explicit schema built from the manifest header; type in a second step | Real file has 15 columns, older files 17; invalid values must be reported, not silently nulled | real run: 0 malformed rows, Spark count = manifest count |
+| D-015 | 2026-11-22 | Never cache the 19M raw rows: one aggregate pass for raw counts, then cache only in-scope rows | Fits a 16 GB laptop with little free disk; full run takes about 3 minutes | run `spark_20261122T170908Z_8b65fe` |
+| D-016 | 2026-11-22 | Quality thresholds pre-registered in `config/quality_rules.yaml`, tagged `dq-thresholds-v1` before the first real run; FAIL blocks curated writes | Brief 6.3: results must not move the bar | tag `dq-thresholds-v1` (commit dfc508e) |
+| D-017 | 2026-11-22 | Records with a negative routing lag or invalid state are kept and flagged (`quality_flags`), not rejected | They are real complaints; only the interval or the code is wrong | 480 negative lags (all 1 day, 2013), 75 invalid states |
+| D-018 | 2026-11-22 | Curated path `option=<n>` instead of `domain=<slug>` | Brief V2 names curated outputs by option number | `docs/data_contracts.md` section 7 |

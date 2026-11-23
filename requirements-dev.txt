@@ -1,6 +1,8 @@
 # Development and CI tools (pinned). Service-specific requirements are added per layer.
+# pyspark: the Turn 3 Spark tests run in CI (GitHub runners ship Java 17).
 pytest==8.3.4
 ruff==0.8.4
 PyYAML==6.0.2
 jsonschema==4.23.0
 requests==2.32.3
+pyspark==3.5.3

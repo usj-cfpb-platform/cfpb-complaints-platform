@@ -1,0 +1,60 @@
+# Data-quality thresholds for the Spark job (brief section 6.3).
+#
+# Committed and tagged `dq-thresholds-v1` BEFORE the final run, so results cannot move the bar.
+# Changing a threshold later needs a new version, a PR and a note in docs/architecture.md.
+#
+# Semantics, for every check:  value > fail_above -> FAIL ;  value > warn_above -> WARN ;  else PASS.
+# Any FAIL stops the run: curated data and aggregates are NOT written (quality report and
+# quarantine still are, so the failure can be investigated). WARN is reported, the run continues.
+# Rates are fractions (0.01 = 1 %).
+
+version: 1
+
+uniqueness:
+  # Duplicate Complaint IDs in the curated output must fail validation (brief 6.3).
+  curated_duplicate_ids:   {warn_above: 0, fail_above: 0}
+  curated_missing_ids:     {warn_above: 0, fail_above: 0}
+
+completeness:
+  # Missing rate in curated records. Required fields: anything missing is suspicious.
+  required_fields: [complaint_id, date_received, product, issue, company]
+  required_missing_rate:   {warn_above: 0.0,   fail_above: 0.01}
+  # Optional fields: a warning only (brief: missing optional ZIP codes may warrant a warning).
+  zip_code_missing_rate:   {warn_above: 0.10,  fail_above: 1.0}
+  state_missing_rate:      {warn_above: 0.05,  fail_above: 1.0}
+  company_response_missing_rate: {warn_above: 0.01, fail_above: 1.0}
+  # Reported, never judged: they do not apply to every product (sub-products/sub-issues exist only
+  # for some issues), or they are no longer published by CFPB.
+  not_applicable_fields: [sub_product, sub_issue, tags, company_public_response]
+  not_in_source_fields: [consumer_consent_provided, consumer_disputed]
+
+validity:
+  # Shares of in-scope rows. Invalid receipt dates are quarantined; a high share means a parsing bug.
+  invalid_date_received_rate:  {warn_above: 0.0,   fail_above: 0.05}
+  invalid_complaint_id_rate:   {warn_above: 0.0,   fail_above: 0.01}
+  malformed_row_rate:          {warn_above: 0.0,   fail_above: 0.001}
+  # Shares of curated rows (kept, but flagged in `quality_flags`).
+  invalid_state_rate:          {warn_above: 0.005, fail_above: 0.05}
+  invalid_timely_rate:         {warn_above: 0.0,   fail_above: 0.01}
+  invalid_date_sent_rate:      {warn_above: 0.0,   fail_above: 0.01}
+  negative_routing_lag_rate:   {warn_above: 0.0,   fail_above: 0.01}
+
+consistency:
+  # Every curated product label must belong to a configured segment (historical labels included).
+  unmapped_product_rate:       {warn_above: 0, fail_above: 0}
+  # A product label seen in the source that looks related to our scope but is not configured
+  # is reported in `label_timeline` for review; it is not a failure.
+  report_top_combinations: 50
+
+freshness:
+  # Days between the run date and the latest receipt date in curated data (CFPB publishes with a lag).
+  days_since_latest_record:    {warn_above: 30, fail_above: 120}
+  # Days between the run date and the latest successful ingestion used as input.
+  days_since_latest_ingestion: {warn_above: 2,  fail_above: 30}
+
+reconciliation:
+  # raw rows = rejected + filtered out + duplicates removed + curated, exactly.
+  unbalanced_rows:             {warn_above: 0, fail_above: 0}
+  # Rows Spark read from the historical CSV vs record_count in its manifest (catches CSV parsing
+  # errors such as broken multi-line fields).
+  raw_vs_manifest_difference:  {warn_above: 0, fail_above: 0}

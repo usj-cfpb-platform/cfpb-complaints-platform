@@ -1,6 +1,6 @@
 # Data contracts
 
-Status: v0.1 (Turn 1). Every layer must follow these contracts. Changes need a PR reviewed by the
+Status: v0.3 (Turn 3: Spark outputs, section 7). Every layer must follow these contracts. Changes need a PR reviewed by the
 owners of the affected layers. Machine-readable versions: `config/schemas/*.schema.json`
 (checked by `tests/unit/test_contracts.py`).
 
@@ -14,7 +14,8 @@ owners of the affected layers. Machine-readable versions: `config/schemas/*.sche
 | `raw/cfpb/api/ingest_date=YYYY-MM-DD/run_id=<id>/response_NNNN.json` | One raw API page per file, unmodified, `NNNN` from 0001 | Incremental collector | Write-once |
 | `raw/cfpb/api/ingest_date=YYYY-MM-DD/run_id=<id>/run_metadata.json` | Run metadata (section 4) | Incremental collector | Write-once |
 | `state/high_water_mark.json` | Current high-water mark for the next run | Incremental collector | Overwritten only after a successful run |
-| `curated/complaints/domain=<slug>/year=YYYY/month=MM/` | Curated records, Snappy Parquet | Spark | Rewritten per load |
+| `curated/complaints/option=<n>/year=YYYY/month=MM/` | Curated records, Snappy Parquet (`option` = brief option number, 15 for us; path of brief V2) | Spark | Rewritten per run |
+| `curated/aggregates/option=<n>/<name>/` | Dashboard aggregates, Snappy Parquet (section 7) | Spark | Rewritten per run |
 | `quarantine/run_id=<id>/` | Rejected records with a `reject_reason` column | Spark | Write-once |
 | `quality/run_id=<id>/quality_report.json` | Quality results per run | Spark | Write-once |
 | `reports/reconciliation/run_id=<id>/reconciliation.json` | Raw -> curated -> MongoDB counts | Loader | Write-once |
@@ -25,7 +26,8 @@ Dates in paths are UTC.
 ## 2. Run identifiers
 
 `run_id = <source>_<UTC timestamp>_<6 hex chars>`, e.g. `api_20261113T031700Z_a1b2c3`,
-`full_20261113T090000Z_9f8e7d`. `source` is `api` or `full`. The same `run_id` is stored on every
+`full_20261113T090000Z_9f8e7d`. `source` is `api` or `full`; Spark processing runs use `spark`
+(`spark_20261122T170908Z_8b65fe`) for `quarantine/` and `quality/`. The same `run_id` is stored on every
 curated record (`source_run_id`) and every MongoDB document, for lineage.
 
 ## 3. Historical load manifest (`manifest.json`)
@@ -114,3 +116,42 @@ without changing any required field:
 so deep paging uses `search_after`; the API filters on `date_received` and `date_sent_to_company`
 but not on publication or update date, hence the lookback window. Authentication: none. Rate limits:
 not documented.
+
+## 7. Spark processing outputs (Turn 3)
+
+Job: `python -m processing.job` (`processing/`). Inputs: the **newest** complete historical load
+plus **every** complete API run (section 6). Each run reprocesses all of them and rewrites the
+curated layer, so a replay of the same input never inflates counts.
+
+**Steps and counts.** Every raw row ends in exactly one bucket, and the run checks the equation
+`raw_rows = rejected_identity + filtered_out_of_scope + rejected_date + duplicates_removed
++ filtered_out_after_dedup + curated` (`reconciliation.unbalanced_rows` must be 0).
+
+| Step | Rows that leave | Where they go |
+|---|---|---|
+| Identity | malformed CSV row, missing/non-numeric `complaint_id`, missing `product` | `quarantine/` (`reject_reason`) |
+| Scope | product not in `domain.products` (and optional `sub_products` / `issues`) | counted only |
+| Receipt date | missing or invalid `date_received` (impossible date, before 2011-07-01, in the future) | `quarantine/` |
+| Deduplication | older versions of a Complaint ID | counted; versions with different content also in `quarantine/` as `duplicate_conflict_superseded` |
+
+**Deduplication rule (decided, D-013).** Keep the version with the most recent `ingested_at`; on a
+tie prefer `api` over `full_load`; on a remaining tie keep the highest `record_hash`.
+
+**Quality gate.** Thresholds in `config/quality_rules.yaml` (version 1, git tag `dq-thresholds-v1`).
+FAIL on any check: quarantine and quality report are written, curated data and aggregates are
+**not** (the previous curated layer stays in place). WARN: reported, the run continues.
+`quality_report.json` holds: `gate`, `dimensions` (every check with value, thresholds, status),
+`reconciliation`, `reject_reasons`, `label_timeline`, `completeness_by_field`, `freshness`,
+`top_combinations`, `invalid_examples`, `inputs`, `code_version`, `rules_version`.
+
+**Aggregates** (`curated/aggregates/option=<n>/<name>/`; every row has `option`, `segment`,
+`complaints` = distinct Complaint IDs, `below_min_cell` = `complaints < privacy.min_cell_size`):
+
+| Name | Grain | Extra columns |
+|---|---|---|
+| `monthly_counts` | segment, product, year, month, year_month | |
+| `issue_breakdown` | segment, product, issue, sub_issue | |
+| `geography_channel` | segment, state (`Missing` / `Invalid` when not a valid code), submitted_via | |
+| `company_response` | segment, year, company_response | |
+| `timely_response` | segment, year_month | `timely_yes`, `timely_no`, `timely_missing_or_invalid`, `timely_pct` = Yes / (Yes + No) x 100 |
+| `routing_lag` | segment, year_month | `lag_valid`, `lag_negative`, `lag_missing`, `lag_invalid`, `lag_mean_days`, `lag_median_days`, `lag_p90_days` (valid intervals only) |
