@@ -89,18 +89,17 @@ def summarize_explain(explain: Mapping[str, Any]) -> dict[str, Any]:
     """
     stats: Mapping[str, Any] = {}
     plan_stages: list[str] = []
+    index_names: set[str] = set()
     for node in _walk(explain):
         if not stats and isinstance(node.get("executionStats"), Mapping):
             stats = node["executionStats"]
         if isinstance(node.get("winningPlan"), Mapping):
-            plan_stages += [
-                str(n["stage"])
-                for n in _walk(node["winningPlan"])
-                if isinstance(n.get("stage"), str)
-            ]
-    index_names = sorted(
-        {str(n["indexName"]) for n in _walk(explain) if isinstance(n.get("indexName"), str)}
-    )
+            # Only the chosen plan: rejectedPlans list every index the planner tried.
+            for n in _walk(node["winningPlan"]):
+                if isinstance(n.get("stage"), str):
+                    plan_stages.append(n["stage"])
+                if isinstance(n.get("indexName"), str):
+                    index_names.add(n["indexName"])
     if "IXSCAN" in plan_stages:
         access = "IXSCAN"
     elif "COLLSCAN" in plan_stages:
@@ -109,7 +108,7 @@ def summarize_explain(explain: Mapping[str, Any]) -> dict[str, Any]:
         access = plan_stages[-1] if plan_stages else "unknown"
     return {
         "access": access,
-        "index": ", ".join(index_names) or "-",
+        "index": ", ".join(sorted(index_names)) or "-",
         "docs_examined": stats.get("totalDocsExamined"),
         "keys_examined": stats.get("totalKeysExamined"),
         "returned": stats.get("nReturned"),

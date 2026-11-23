@@ -249,3 +249,17 @@ def test_summarize_explain_sbe_collscan_shape() -> None:
     }
     s = summarize_explain(doc)
     assert s["access"] == "COLLSCAN" and s["docs_examined"] == 700000 and s["index"] == "-"
+
+
+def test_summarize_explain_reports_only_the_winning_index() -> None:
+    doc = {
+        "queryPlanner": {
+            "winningPlan": {"queryPlan": {"stage": "IXSCAN", "indexName": "ix_segment_state_date"}},
+            "rejectedPlans": [
+                {"queryPlan": {"stage": "IXSCAN", "indexName": "ix_segment_date"}},
+                {"queryPlan": {"stage": "IXSCAN", "indexName": "ix_segment_issue_date"}},
+            ],
+        },
+        "executionStats": {"totalDocsExamined": 7973, "executionTimeMillis": 30},
+    }
+    assert summarize_explain(doc)["index"] == "ix_segment_state_date"
