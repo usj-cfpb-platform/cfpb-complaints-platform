@@ -155,3 +155,25 @@ FAIL on any check: quarantine and quality report are written, curated data and a
 | `company_response` | segment, year, company_response | |
 | `timely_response` | segment, year_month | `timely_yes`, `timely_no`, `timely_missing_or_invalid`, `timely_pct` = Yes / (Yes + No) x 100 |
 | `routing_lag` | segment, year_month | `lag_valid`, `lag_negative`, `lag_missing`, `lag_invalid`, `lag_mean_days`, `lag_median_days`, `lag_p90_days` (valid intervals only) |
+
+## 8. MongoDB serving layer (Turn 4) - contract for analysis and dashboard
+
+Database `MONGO_DB` (default `cfpb`). Design and rationale: `docs/mongodb.md`.
+
+| Collection | Key / grain | Notes for readers |
+|---|---|---|
+| `complaints` | one document per `complaint_id` (unique index) | all curated fields; dates are BSON `Date` (UTC) |
+| `agg_monthly_counts` | segment, product, year, month, year_month | from Spark, replaced each load |
+| `agg_issue_breakdown` | segment, product, issue, sub_issue | |
+| `agg_geography_channel` | segment, state, submitted_via | `state` is `Missing` / `Invalid` when not a valid code |
+| `agg_company_response` | segment, year, company_response | |
+| `agg_timely_response` | segment, year_month | multi-month timely % must be recomputed from summed `timely_yes` / `timely_no`, never averaged |
+| `agg_routing_lag` | segment, year_month | routing time (CFPB receipt to referral), not company resolution time |
+| `pipeline_runs` | one document per load, newest `finished_at` first | `freshness.latest_date_received`, `freshness.serving_refreshed_at`, `balanced`, `quality_gate`, counts |
+
+Rules for Turns 5 and 6:
+* Use `database.queries` (filters dict: `segment`, `date_from`, `date_to`, `product`, `issue`,
+  `state`, `company`, `channel`) for filtered views; the `agg_*` collections for unfiltered overviews.
+* Never read MinIO or raw data from the dashboard (brief 5).
+* Show counts **and** shares within segment; hide or grey out rows with `below_min_cell = true`.
+* Freshness indicator: newest `pipeline_runs` document.

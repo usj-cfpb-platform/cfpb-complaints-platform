@@ -121,14 +121,40 @@ docker compose run --rm spark sh -c "pip install -q pytest==8.3.4 && python -m p
 
 Results of the first real run, decisions and the hand-off to Turn 4: `docs/ALI_TURN3_REPORT.md`.
 
+## MongoDB serving layer (Turn 4)
+
+Curated complaints and the six Spark aggregates are loaded into MongoDB (database `cfpb`). The
+loader refuses a failed quality gate, upserts by `complaint_id` (a replay changes nothing) and
+writes a raw -> curated -> MongoDB reconciliation report. Design: `docs/mongodb.md`.
+
+```
+# Load (after processing.job): complaints + agg_* collections + reconciliation report
+docker compose run --rm spark python -m database.load
+
+# Replay the same data: expect inserted 0 / updated 0, same document count (demo step 5)
+docker compose run --rm spark python -m database.load
+
+# Index evidence: explain() and timings before/after (writes docs/evidence/index_benchmark.md)
+docker compose run --rm spark python -m database.benchmark
+
+# Print the query catalogue (Q1-Q8); add --show-pipeline to see the stages
+docker compose run --rm spark python -m database.queries --segment deposit_accounts --date-from 2024-01-01
+
+# Sample end to end without MinIO (also in CI with a real MongoDB)
+docker compose run --rm spark python -m processing.job --sample
+docker compose run --rm spark python -m database.load --sample
+```
+
+Reset only the serving layer: `docker compose exec mongodb mongosh -u <user> -p <password> --eval "db.getSiblingDB('cfpb').dropDatabase()"`, then load again.
+
 ## Status
 
 | Layer | Owner | Status |
 |---|---|---|
 | Foundation | Mhamad | Done (Turn 1) |
 | Acquisition + raw | Maroun | Done (Turn 2, PR #18) |
-| Spark + data quality | Ali | Done (Turn 3), in review |
-| MongoDB + integration | Mhamad | Not started |
+| Spark + data quality | Ali | Done (Turn 3, PR #19) |
+| MongoDB + integration | Mhamad | In progress (Turn 4) |
 | Analysis | Maroun | Not started |
 | Dashboard | Ali | Not started |
 
