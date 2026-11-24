@@ -259,6 +259,38 @@ def test_dedup_newest_ingestion_wins_then_api_over_full_load(spark, tmp_path) ->
     assert by_id["3"]["source"] == "full_load"
 
 
+def test_same_complaint_with_api_timestamps_is_not_a_conflict(spark, tmp_path) -> None:
+    """DEF-08: the API writes dates as timestamps; only a real field change is a conflict."""
+    path = write_csv(tmp_path / "f.csv", [row("7"), row("8", **{"Company public response": ""})])
+    full = csv_batch(path, ingested="2026-11-01T00:00:00Z")
+    same = {
+        "date_received": "2026-10-01T00:20:56.000Z",
+        "date_sent_to_company": "2026-10-02T00:33:21.000Z",
+        "product": "Checking or savings account",
+        "issue": "Managing an account",
+        "company": "Bank X",
+        "state": "NY",
+        "zip_code": "100XX",
+        "submitted_via": "Web",
+        "company_response": "Closed with explanation",
+        "timely": "Yes",
+    }
+    changed = {**same, "company_public_response": "Company has responded to the consumer"}
+    api = api_batch(
+        tmp_path,
+        [{**same, "complaint_id": 7}, {**changed, "complaint_id": 8}],
+        "api_ts",
+        "2026-11-10T00:00:00Z",
+    )
+    report = run_job(spark, [full, api], tmp_path)
+    assert report["reconciliation"]["duplicates_removed"] == 2
+    assert report["reconciliation"]["duplicate_conflicts"] == 1  # only id 8 really changed
+    curated = spark.read.parquet(str(tmp_path / "out" / "curated" / "complaints" / "option=15"))
+    by_id = {r["complaint_id"]: r for r in curated.collect()}
+    assert str(by_id["7"]["date_received"]) == "2026-10-01"
+    assert by_id["8"]["company_public_response"] == "Company has responded to the consumer"
+
+
 def test_routing_lag_negative_missing_and_invalid(spark, tmp_path) -> None:
     path = write_csv(
         tmp_path / "l.csv",

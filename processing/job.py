@@ -504,6 +504,8 @@ def _print_summary(report: dict[str, Any]) -> None:
         "unbalanced_rows",
     ):
         print(f"  {key:<26}{rec[key]:>12,}")
+        if key == "duplicates_removed" and "duplicate_conflicts" in rec:
+            print(f"    {'of which content changed':<24}{rec['duplicate_conflicts']:>12,}")
     print("Checks:")
     for dimension, checks in report["dimensions"].items():
         for check in checks:
