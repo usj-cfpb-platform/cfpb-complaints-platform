@@ -37,14 +37,25 @@ MongoDB, loaded twice) in the new CI job `mongodb-e2e` against a real MongoDB 7.
 nothing. Every benchmark query moved from COLLSCAN to IXSCAN; speed-ups from 2.1x (broad multi-year
 views reading 16 % of the documents) to 23.7x (state filter reading 1 %).
 
+### Re-load with the API batches (24 Nov 2026, `docs/evidence/turn4_api_reload.md`)
+
+After Maroun synced the four scheduled API runs and Ali's Spark changes were merged, the same chain
+ran on this machine: 19,434,750 raw rows -> 706,645 curated -> MongoDB **621 inserted**, replay
+0 / 0 / 706,645. The first load also reported 14,201 updates; a field-by-field diagnostic
+(`scripts/diagnose_versions.py`) showed that only 183 were real (`company_response`,
+`company_public_response`) and the rest came from the date format (`2026-10-09` in the CSV,
+`2026-10-09T00:20:56.000Z` in the API). Fixed as **DEF-08** (hash parsed dates): real conflicts in
+Spark went from 14,706 to 732; after a one-time re-hash of the 14,822 API documents, a replay
+changes nothing and `updated` now means a real change.
+
 ## 4. Limitations
 
 * Single MongoDB node: no replica set or sharding (discussed in `docs/mongodb.md` section 7).
 * The load reads all curated rows each time (about 2 minutes); fine at 706k, would need incremental
   partitions at larger scale.
 * The benchmark measures one laptop with warm caches; absolute times vary, the scan counts do not.
-* No API batch was processed yet at the time of the real run; the first scheduled runs are now
-  collecting and enter MongoDB through the same `processing.job` -> `database.load` path.
+* Single-day API evidence: four scheduled runs (56,468 records) over two days; longer operation
+  will show the real rate of changed complaints.
 
 ## 5. Hand-off to Turn 5 (Maroun, analysis) and Turn 6 (Ali, dashboard)
 
