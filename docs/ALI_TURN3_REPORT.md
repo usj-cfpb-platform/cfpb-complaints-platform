@@ -138,8 +138,10 @@ Live run on the real data (run `spark_20261122T172858Z_9a2657`, `--inject-defect
 were still written under `quality/` and `quarantine/run_id=spark_20261122T172858Z_9a2657/`.
 ## 7. Limits and follow-ups
 
-* No API run has been processed yet: the scheduled collector starts once `domain.products` is on
-  `main` (this PR). The API path is covered by tests with sample pages.
+* API runs: first processed on 2026-11-24 together with the historical load (run
+  `spark_20261124T162014Z_f507b1`): 55,803 duplicates removed, curated 706,644. Evidence:
+  `docs/evidence/turn3_api_dedup_run.md`. A successful API run with no pages (empty window) is
+  skipped instead of failing the job (DEF-07).
 * The CSV is read with `multiLine`, which Spark cannot split: reading uses one core (about 1 minute
   on the test laptop). Acceptable for a daily batch.
 * If the same Complaint ID appears twice in the *same* batch with different content, the tie is
