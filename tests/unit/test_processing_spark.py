@@ -325,3 +325,19 @@ def test_injected_duplicate_defect_is_caught_and_nothing_is_written(spark, tmp_p
     assert "reconciliation.unbalanced_rows" in report["gate"]["failed_checks"]
     assert report["outputs_written"] is False
     assert not (tmp_path / "out" / "curated").exists()
+
+
+def test_empty_api_run_is_skipped() -> None:
+    from types import SimpleNamespace
+
+    from processing.readers import batches_from_discovery
+
+    full = SimpleNamespace(
+        source="full", run_id="full_1", data_keys=["raw/x.csv"], record_count=2,
+        document={"header": ["Complaint ID"], "download_finished_at": "2026-11-22T00:00:00Z"},
+    )  # fmt: skip
+    empty = SimpleNamespace(
+        source="api", run_id="api_1", data_keys=[], record_count=0, document={"finished_at": "x"}
+    )
+    batches = batches_from_discovery([full, empty], "datalake")
+    assert [b.run_id for b in batches] == ["full_1"]

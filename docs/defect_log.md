@@ -11,6 +11,7 @@ newest last. Each owner adds the defects found in their own layer.
 | DEF-04 | 2026-11-21 | 2 / ci | CI (`lint-and-test`) | Code used a pattern flagged by the pinned ruff 0.8.4 (UP038); `requests` missing from dev requirements | PR blocked by CI | Code and `requirements-dev.txt` corrected | commit `e21eddb` | CI lint job |
 | DEF-05 | 2026-11-22 | 3 / ci | CI (`lint-and-test`) | Spark 3.5 tests failed on the runner's newer default Java; a later edit pasted shell lines into the workflow | Spark tests could not run in CI | Java 17 pinned with `actions/setup-java` (same as the Spark image); stray lines removed | commits `969f197`, `1375322` | Spark unit tests run in CI |
 | DEF-06 | 2026-11-23 | 4 / database | review of the first real benchmark output | Benchmark reported every index the planner tried (from `rejectedPlans`) as used | Misleading index evidence | Read index names from the winning plan only | commit `92bbaca`, `docs/evidence/index_benchmark.md` | `test_summarize_explain_reports_only_the_winning_index` |
+| DEF-07 | 2026-11-24 | 3 / processing | code review before the first API processing run | A successful API run whose window had no new complaints stores no page; Spark was given an empty path list and would stop the whole job | One empty scheduled run would block all processing | Empty API runs are skipped and logged (`processing/readers.py`) | branch `fix/turn3-api-dedup-evidence` | `test_empty_api_run_is_skipped` |
 
 ## Deliberate defects (tests that must fail)
 
