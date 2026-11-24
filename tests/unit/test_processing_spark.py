@@ -341,3 +341,28 @@ def test_empty_api_run_is_skipped() -> None:
     )
     batches = batches_from_discovery([full, empty], "datalake")
     assert [b.run_id for b in batches] == ["full_1"]
+
+
+def test_csv_vs_parquet_benchmark_same_results(spark, tmp_path) -> None:
+    from processing import benchmark
+
+    path = write_csv(
+        tmp_path / "b.csv",
+        [row(str(i), Issue="line one\nline two" if i == 3 else "Managing an account")
+         for i in range(1, 30)],
+    )  # fmt: skip
+    run_job(spark, [csv_batch(path)], tmp_path)
+    curated = f"file://{tmp_path / 'out' / 'curated' / 'complaints' / 'option=15'}"
+    out_dir = tmp_path / "bench"
+
+    def size_of(sub: str) -> int:
+        return sum(p.stat().st_size for p in (out_dir / sub).rglob("*.csv")) + sum(
+            p.stat().st_size for p in (out_dir / sub).rglob("*.parquet")
+        )
+
+    report = benchmark.run(spark, curated, f"file://{out_dir}", size_of, repeats=1)
+    assert report["rows"] == 29
+    assert report["same_results_both_formats"] is True
+    assert report["results"]["csv"]["queries"]["full_scan_count"]["result"] == 29
+    assert report["results"]["csv"]["bytes"] > 0 and report["results"]["parquet"]["bytes"] > 0
+    assert "| Size |" in benchmark.to_markdown(report)
