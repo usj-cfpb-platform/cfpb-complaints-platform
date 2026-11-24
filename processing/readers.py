@@ -70,6 +70,10 @@ def batches_from_discovery(runs: Iterable[Any], bucket: str) -> list[InputBatch]
         )
     for run in api:
         doc = run.document or {}
+        if not run.data_keys:
+            # A successful run whose window had no new complaints stores no page: nothing to read.
+            LOG.info("API run %s has no pages (0 records); skipped", run.run_id)
+            continue
         batches.append(
             InputBatch(
                 source=SOURCE_API,
