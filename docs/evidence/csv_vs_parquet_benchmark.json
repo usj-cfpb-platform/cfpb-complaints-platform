@@ -1,0 +1,82 @@
+{
+  "benchmark": "csv_vs_parquet",
+  "created_at": "2026-11-24T16:38:03.810388+00:00",
+  "input": "s3a://datalake/curated/complaints/option=15",
+  "copies": "s3a://datalake/benchmark/run_id=bench_20261124T163722Z",
+  "rows": 706644,
+  "repeats": 3,
+  "filter_used": {
+    "segment": "transfers_payments",
+    "year": 2025
+  },
+  "results": {
+    "csv": {
+      "bytes": 295439866,
+      "queries": {
+        "full_scan_count": {
+          "median_seconds": 1.001,
+          "runs_seconds": [
+            1.165,
+            0.966,
+            1.001
+          ],
+          "result": 706644
+        },
+        "column_aggregate": {
+          "median_seconds": 1.105,
+          "runs_seconds": [
+            1.191,
+            1.053,
+            1.105
+          ]
+        },
+        "filtered_count": {
+          "median_seconds": 0.958,
+          "runs_seconds": [
+            1.114,
+            0.958,
+            0.953
+          ],
+          "result": 84619
+        }
+      }
+    },
+    "parquet": {
+      "bytes": 56890280,
+      "queries": {
+        "full_scan_count": {
+          "median_seconds": 0.193,
+          "runs_seconds": [
+            0.189,
+            0.193,
+            0.202
+          ],
+          "result": 706644,
+          "speedup_vs_csv": 5.19
+        },
+        "column_aggregate": {
+          "median_seconds": 0.404,
+          "runs_seconds": [
+            0.433,
+            0.404,
+            0.338
+          ],
+          "speedup_vs_csv": 2.74
+        },
+        "filtered_count": {
+          "median_seconds": 0.283,
+          "runs_seconds": [
+            0.304,
+            0.283,
+            0.268
+          ],
+          "result": 84619,
+          "speedup_vs_csv": 3.39
+        }
+      }
+    }
+  },
+  "size_ratio_csv_over_parquet": 5.19,
+  "same_results_both_formats": true,
+  "run_id": "bench_20261124T163722Z"
+}
