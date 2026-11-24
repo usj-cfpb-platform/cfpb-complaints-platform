@@ -230,18 +230,28 @@ def in_scope(scope: Scope) -> Column:
 
 
 def with_record_hash(df: DataFrame) -> DataFrame:
-    """SHA-256 of the source fields: detects when the same Complaint ID changed between versions."""
+    """SHA-256 of the source fields: detects when the same Complaint ID changed between versions.
+
+    Dates are hashed as parsed ``YYYY-MM-DD`` values, not as received: the CSV writes
+    ``2026-10-09`` and the API ``2026-10-09T00:20:56.000Z`` for the same day, and hashing the raw
+    text made every API version look changed (DEF-08). A date that does not parse falls back to
+    its raw text, so an invalid value still counts as a difference.
+    """
     from pyspark.sql import functions as F
 
-    parts = [
-        F.coalesce(F.col(f"{name}_raw" if name in _RAW_KEPT else name).cast("string"), F.lit(""))
-        for name in SOURCE_FIELDS
-        if name != "tags"
-    ] + [F.coalesce(F.array_join(F.col("tags"), "|"), F.lit(""))]
+    def value(name: str) -> Column:
+        if name in _DATE_FIELDS:
+            return F.coalesce(F.col(name).cast("string"), F.col(f"{name}_raw"))
+        return F.col(f"{name}_raw" if name in _RAW_KEPT else name).cast("string")
+
+    parts = [F.coalesce(value(name), F.lit("")) for name in SOURCE_FIELDS if name != "tags"] + [
+        F.coalesce(F.array_join(F.col("tags"), "|"), F.lit(""))
+    ]
     return df.withColumn("record_hash", F.sha2(F.concat_ws("\u0001", *parts), 256))
 
 
-_RAW_KEPT = {"date_received", "date_sent_to_company", "timely"}
+_DATE_FIELDS = {"date_received", "date_sent_to_company"}
+_RAW_KEPT = {"timely"}
 
 
 def rank_versions(df: DataFrame) -> DataFrame:
