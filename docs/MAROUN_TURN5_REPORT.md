@@ -1,8 +1,6 @@
 # Turn 5 report - Analysis (option 15: access to deposited and transferred funds)
 
-Author: Maroun Machaalany. Status: **code and tests done; real-data results are produced by running
-the script on the laptop (section 5) and committed as evidence.** No number in this report is
-invented: every figure comes from `docs/analysis/turn5_analysis_results.md`.
+Author: Maroun Machaalany. Status: **done.** Every figure comes from the real-data run of 26 Nov 2026 (section 6).
 
 ## 1. Question
 
@@ -63,11 +61,28 @@ docker compose run --rm spark python -m analytics.run_analysis
 Outputs `docs/analysis/turn5_analysis_results.{json,md}` (also printed). Pure-logic tests need no
 database: `python -m pytest tests/unit/test_analytics.py`.
 
-## 6. Results on real data
+## 6. Results on real data (26 Nov 2026)
 
-*To be filled from `docs/analysis/turn5_analysis_results.md` after the run (freshness line, table
-M2, one-sentence reading per measure).* Placeholder deliberately left empty to avoid unverified
-figures.
+Run on the laptop against load `load_20261126T170954Z_1a407d` (raw 19,310,325 rows, 706,017 curated
+complaints, balanced, quality gate WARN with 3 minor warnings; latest complaint 2026-11-23).
+Full tables, interpretation and the limitation next to each result are in `docs/analysis.md`;
+raw outputs in `docs/analysis/turn5_full_history.{md,json}` (all dates) and
+`docs/analysis/turn5_analysis_results.{md,json}` (from 2024-01-01 with the fund-access labels).
+
+| Measure | Result |
+|---|---|
+| Volume, all years | deposits 501,237; transfers 204,780 (sum 706,017 = MongoDB total) |
+| Timely %, since 2024 | 99.32 % vs 98.43 %, gap 0.89 pp (95 % CI 0.81-0.96) |
+| Timely %, all years | 98.78 % vs 98.29 %, gap 0.49 pp (0.42-0.55); gap reverses in 2016-2017 |
+| Fund-access issue share (2 labels), since 2024 | transfers 10.86 %; deposits has no equivalent label |
+| Monetary relief, since 2024 | 12.41 % vs 4.66 % |
+| Routing lag since 2024 | mean 1.11 vs 1.15 days, median 0, P90 1 for both |
+
+Findings on the data itself: the two segments share no issue label, so issue shares cannot be
+compared directly (documented as the key limitation of Q2). The 2025 volume jump in transfers
+(16,751 to 84,619) is reported but not explained. No defect was found, so no new defect-log entry.
+Environment note: the Spark image was missing on my laptop and Docker built it automatically
+(about 65 min); this is not caused by the repository.
 
 ## 7. Hand-off to Ali (dashboard, Turn 6)
 
@@ -75,10 +90,10 @@ Views (all from `database.queries`, same filter dict): (1) monthly trend by segm
 (2) issue mix within segment (`issue_mix`); (3) timely % by segment and year (`timely_rate`);
 (4) company response mix (`company_response_mix`); (5) routing lag, channel and state mix.
 Filters: date range plus segment, product, issue, state, channel, company. Demo questions: Q2 and Q3.
-Always show counts and shares within segment, grey out `below_min_cell`, show freshness from the
+For the issue view show one list per segment side by side, not a gap chart: the two segments share no issue label (see `docs/analysis.md` Q2). Always show counts and shares within segment, grey out `below_min_cell`, show freshness from the
 newest `pipeline_runs` document.
 
 ## 8. Files
 
 `analytics/measures.py`, `analytics/run_analysis.py`, `tests/unit/test_analytics.py`, this report.
-Findings (`docs/analysis.md`) come in the second PR after the real-data run.
+`docs/analysis.md` (findings) and `docs/analysis/` (raw outputs).

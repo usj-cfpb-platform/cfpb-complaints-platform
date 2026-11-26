@@ -155,7 +155,7 @@ Reset only the serving layer: `docker compose exec mongodb mongosh -u <user> -p 
 | Acquisition + raw | Maroun | Done (Turn 2, PR #18) |
 | Spark + data quality | Ali | Done (Turn 3, PR #19) |
 | MongoDB + integration | Mhamad | In progress (Turn 4) |
-| Analysis | Maroun | Code and tests done; real-data run pending (`docs/MAROUN_TURN5_REPORT.md`) |
+| Analysis | Maroun | Done: findings in `docs/analysis.md`, report `docs/MAROUN_TURN5_REPORT.md` |
 | Dashboard | Ali | Not started |
 
 ## Data source
