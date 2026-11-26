@@ -1,0 +1,1017 @@
+{
+  "segments": [
+    "deposit_accounts",
+    "transfers_payments"
+  ],
+  "filters": {},
+  "volume": {
+    "deposit_accounts": 501237,
+    "transfers_payments": 204780
+  },
+  "volume_by_year": {
+    "2012": {
+      "deposit_accounts": 12210
+    },
+    "2013": {
+      "deposit_accounts": 13388,
+      "transfers_payments": 559
+    },
+    "2014": {
+      "deposit_accounts": 14662,
+      "transfers_payments": 1170
+    },
+    "2015": {
+      "deposit_accounts": 17137,
+      "transfers_payments": 1626
+    },
+    "2016": {
+      "deposit_accounts": 21846,
+      "transfers_payments": 1574
+    },
+    "2017": {
+      "deposit_accounts": 19718,
+      "transfers_payments": 3708
+    },
+    "2018": {
+      "deposit_accounts": 21207,
+      "transfers_payments": 5430
+    },
+    "2019": {
+      "deposit_accounts": 21734,
+      "transfers_payments": 5082
+    },
+    "2020": {
+      "deposit_accounts": 24238,
+      "transfers_payments": 8306
+    },
+    "2021": {
+      "deposit_accounts": 29556,
+      "transfers_payments": 13896
+    },
+    "2022": {
+      "deposit_accounts": 37582,
+      "transfers_payments": 13534
+    },
+    "2023": {
+      "deposit_accounts": 49873,
+      "transfers_payments": 13749
+    },
+    "2024": {
+      "deposit_accounts": 52821,
+      "transfers_payments": 16751
+    },
+    "2025": {
+      "deposit_accounts": 84195,
+      "transfers_payments": 84619
+    },
+    "2026": {
+      "deposit_accounts": 81070,
+      "transfers_payments": 34776
+    }
+  },
+  "timely_overall": {
+    "a": {
+      "complaints": 501237,
+      "timely_yes": 495128,
+      "timely_no": 6109,
+      "valid": 501237,
+      "missing_or_invalid": 0,
+      "timely_pct": 98.78,
+      "ci95_pct": [
+        98.75,
+        98.81
+      ]
+    },
+    "b": {
+      "complaints": 204780,
+      "timely_yes": 201288,
+      "timely_no": 3492,
+      "valid": 204780,
+      "missing_or_invalid": 0,
+      "timely_pct": 98.29,
+      "ci95_pct": [
+        98.24,
+        98.35
+      ]
+    },
+    "gap": {
+      "gap_pp": 0.49,
+      "ci95_pp": [
+        0.42,
+        0.55
+      ],
+      "p_value": 1.0038106822325052e-57
+    }
+  },
+  "timely_by_year": [
+    {
+      "a": {
+        "complaints": 12210,
+        "timely_yes": 11913,
+        "timely_no": 297,
+        "valid": 12210,
+        "missing_or_invalid": 0,
+        "timely_pct": 97.57,
+        "ci95_pct": [
+          97.28,
+          97.83
+        ]
+      },
+      "b": {
+        "complaints": 0,
+        "timely_yes": 0,
+        "timely_no": 0,
+        "valid": 0,
+        "missing_or_invalid": 0,
+        "timely_pct": null,
+        "ci95_pct": null
+      },
+      "gap": null,
+      "year": "2012"
+    },
+    {
+      "a": {
+        "complaints": 13388,
+        "timely_yes": 13305,
+        "timely_no": 83,
+        "valid": 13388,
+        "missing_or_invalid": 0,
+        "timely_pct": 99.38,
+        "ci95_pct": [
+          99.23,
+          99.5
+        ]
+      },
+      "b": {
+        "complaints": 559,
+        "timely_yes": 554,
+        "timely_no": 5,
+        "valid": 559,
+        "missing_or_invalid": 0,
+        "timely_pct": 99.11,
+        "ci95_pct": [
+          97.92,
+          99.62
+        ]
+      },
+      "gap": {
+        "gap_pp": 0.27,
+        "ci95_pp": [
+          -0.52,
+          1.07
+        ],
+        "p_value": 0.42195583772123496
+      },
+      "year": "2013"
+    },
+    {
+      "a": {
+        "complaints": 14662,
+        "timely_yes": 14546,
+        "timely_no": 116,
+        "valid": 14662,
+        "missing_or_invalid": 0,
+        "timely_pct": 99.21,
+        "ci95_pct": [
+          99.05,
+          99.34
+        ]
+      },
+      "b": {
+        "complaints": 1170,
+        "timely_yes": 1147,
+        "timely_no": 23,
+        "valid": 1170,
+        "missing_or_invalid": 0,
+        "timely_pct": 98.03,
+        "ci95_pct": [
+          97.07,
+          98.69
+        ]
+      },
+      "gap": {
+        "gap_pp": 1.17,
+        "ci95_pp": [
+          0.37,
+          1.98
+        ],
+        "p_value": 3.400768907680292e-05
+      },
+      "year": "2014"
+    },
+    {
+      "a": {
+        "complaints": 17137,
+        "timely_yes": 17009,
+        "timely_no": 128,
+        "valid": 17137,
+        "missing_or_invalid": 0,
+        "timely_pct": 99.25,
+        "ci95_pct": [
+          99.11,
+          99.37
+        ]
+      },
+      "b": {
+        "complaints": 1626,
+        "timely_yes": 1584,
+        "timely_no": 42,
+        "valid": 1626,
+        "missing_or_invalid": 0,
+        "timely_pct": 97.42,
+        "ci95_pct": [
+          96.53,
+          98.08
+        ]
+      },
+      "gap": {
+        "gap_pp": 1.84,
+        "ci95_pp": [
+          1.05,
+          2.62
+        ],
+        "p_value": 8.171511018506103e-14
+      },
+      "year": "2015"
+    },
+    {
+      "a": {
+        "complaints": 21846,
+        "timely_yes": 20768,
+        "timely_no": 1078,
+        "valid": 21846,
+        "missing_or_invalid": 0,
+        "timely_pct": 95.07,
+        "ci95_pct": [
+          94.77,
+          95.34
+        ]
+      },
+      "b": {
+        "complaints": 1574,
+        "timely_yes": 1522,
+        "timely_no": 52,
+        "valid": 1574,
+        "missing_or_invalid": 0,
+        "timely_pct": 96.7,
+        "ci95_pct": [
+          95.69,
+          97.47
+        ]
+      },
+      "gap": {
+        "gap_pp": -1.63,
+        "ci95_pp": [
+          -2.56,
+          -0.7
+        ],
+        "p_value": 0.0035442952475880514
+      },
+      "year": "2016"
+    },
+    {
+      "a": {
+        "complaints": 19718,
+        "timely_yes": 19059,
+        "timely_no": 659,
+        "valid": 19718,
+        "missing_or_invalid": 0,
+        "timely_pct": 96.66,
+        "ci95_pct": [
+          96.4,
+          96.9
+        ]
+      },
+      "b": {
+        "complaints": 3708,
+        "timely_yes": 3627,
+        "timely_no": 81,
+        "valid": 3708,
+        "missing_or_invalid": 0,
+        "timely_pct": 97.82,
+        "ci95_pct": [
+          97.29,
+          98.24
+        ]
+      },
+      "gap": {
+        "gap_pp": -1.16,
+        "ci95_pp": [
+          -1.69,
+          -0.62
+        ],
+        "p_value": 0.00021753176189448094
+      },
+      "year": "2017"
+    },
+    {
+      "a": {
+        "complaints": 21207,
+        "timely_yes": 21068,
+        "timely_no": 139,
+        "valid": 21207,
+        "missing_or_invalid": 0,
+        "timely_pct": 99.34,
+        "ci95_pct": [
+          99.23,
+          99.44
+        ]
+      },
+      "b": {
+        "complaints": 5430,
+        "timely_yes": 5339,
+        "timely_no": 91,
+        "valid": 5430,
+        "missing_or_invalid": 0,
+        "timely_pct": 98.32,
+        "ci95_pct": [
+          97.95,
+          98.63
+        ]
+      },
+      "gap": {
+        "gap_pp": 1.02,
+        "ci95_pp": [
+          0.66,
+          1.38
+        ],
+        "p_value": 4.114472541158807e-13
+      },
+      "year": "2018"
+    },
+    {
+      "a": {
+        "complaints": 21734,
+        "timely_yes": 21304,
+        "timely_no": 430,
+        "valid": 21734,
+        "missing_or_invalid": 0,
+        "timely_pct": 98.02,
+        "ci95_pct": [
+          97.83,
+          98.2
+        ]
+      },
+      "b": {
+        "complaints": 5082,
+        "timely_yes": 4955,
+        "timely_no": 127,
+        "valid": 5082,
+        "missing_or_invalid": 0,
+        "timely_pct": 97.5,
+        "ci95_pct": [
+          97.03,
+          97.9
+        ]
+      },
+      "gap": {
+        "gap_pp": 0.52,
+        "ci95_pp": [
+          0.05,
+          0.99
+        ],
+        "p_value": 0.019155125578669847
+      },
+      "year": "2019"
+    },
+    {
+      "a": {
+        "complaints": 24238,
+        "timely_yes": 23988,
+        "timely_no": 250,
+        "valid": 24238,
+        "missing_or_invalid": 0,
+        "timely_pct": 98.97,
+        "ci95_pct": [
+          98.83,
+          99.09
+        ]
+      },
+      "b": {
+        "complaints": 8306,
+        "timely_yes": 8172,
+        "timely_no": 134,
+        "valid": 8306,
+        "missing_or_invalid": 0,
+        "timely_pct": 98.39,
+        "ci95_pct": [
+          98.09,
+          98.64
+        ]
+      },
+      "gap": {
+        "gap_pp": 0.58,
+        "ci95_pp": [
+          0.28,
+          0.88
+        ],
+        "p_value": 2.254337353036315e-05
+      },
+      "year": "2020"
+    },
+    {
+      "a": {
+        "complaints": 29556,
+        "timely_yes": 29075,
+        "timely_no": 481,
+        "valid": 29556,
+        "missing_or_invalid": 0,
+        "timely_pct": 98.37,
+        "ci95_pct": [
+          98.22,
+          98.51
+        ]
+      },
+      "b": {
+        "complaints": 13896,
+        "timely_yes": 13561,
+        "timely_no": 335,
+        "valid": 13896,
+        "missing_or_invalid": 0,
+        "timely_pct": 97.59,
+        "ci95_pct": [
+          97.32,
+          97.83
+        ]
+      },
+      "gap": {
+        "gap_pp": 0.78,
+        "ci95_pp": [
+          0.49,
+          1.08
+        ],
+        "p_value": 2.018682169396103e-08
+      },
+      "year": "2021"
+    },
+    {
+      "a": {
+        "complaints": 37582,
+        "timely_yes": 37048,
+        "timely_no": 534,
+        "valid": 37582,
+        "missing_or_invalid": 0,
+        "timely_pct": 98.58,
+        "ci95_pct": [
+          98.45,
+          98.69
+        ]
+      },
+      "b": {
+        "complaints": 13534,
+        "timely_yes": 13316,
+        "timely_no": 218,
+        "valid": 13534,
+        "missing_or_invalid": 0,
+        "timely_pct": 98.39,
+        "ci95_pct": [
+          98.16,
+          98.59
+        ]
+      },
+      "gap": {
+        "gap_pp": 0.19,
+        "ci95_pp": [
+          -0.05,
+          0.43
+        ],
+        "p_value": 0.11569460222458783
+      },
+      "year": "2022"
+    },
+    {
+      "a": {
+        "complaints": 49873,
+        "timely_yes": 49434,
+        "timely_no": 439,
+        "valid": 49873,
+        "missing_or_invalid": 0,
+        "timely_pct": 99.12,
+        "ci95_pct": [
+          99.03,
+          99.2
+        ]
+      },
+      "b": {
+        "complaints": 13749,
+        "timely_yes": 13496,
+        "timely_no": 253,
+        "valid": 13749,
+        "missing_or_invalid": 0,
+        "timely_pct": 98.16,
+        "ci95_pct": [
+          97.92,
+          98.37
+        ]
+      },
+      "gap": {
+        "gap_pp": 0.96,
+        "ci95_pp": [
+          0.72,
+          1.2
+        ],
+        "p_value": 7.425591155590842e-22
+      },
+      "year": "2023"
+    },
+    {
+      "a": {
+        "complaints": 52821,
+        "timely_yes": 52496,
+        "timely_no": 325,
+        "valid": 52821,
+        "missing_or_invalid": 0,
+        "timely_pct": 99.38,
+        "ci95_pct": [
+          99.31,
+          99.45
+        ]
+      },
+      "b": {
+        "complaints": 16751,
+        "timely_yes": 16365,
+        "timely_no": 386,
+        "valid": 16751,
+        "missing_or_invalid": 0,
+        "timely_pct": 97.7,
+        "ci95_pct": [
+          97.46,
+          97.91
+        ]
+      },
+      "gap": {
+        "gap_pp": 1.69,
+        "ci95_pp": [
+          1.45,
+          1.93
+        ],
+        "p_value": 5.414817144641834e-80
+      },
+      "year": "2024"
+    },
+    {
+      "a": {
+        "complaints": 84195,
+        "timely_yes": 83586,
+        "timely_no": 609,
+        "valid": 84195,
+        "missing_or_invalid": 0,
+        "timely_pct": 99.28,
+        "ci95_pct": [
+          99.22,
+          99.33
+        ]
+      },
+      "b": {
+        "complaints": 84619,
+        "timely_yes": 83591,
+        "timely_no": 1028,
+        "valid": 84619,
+        "missing_or_invalid": 0,
+        "timely_pct": 98.79,
+        "ci95_pct": [
+          98.71,
+          98.86
+        ]
+      },
+      "gap": {
+        "gap_pp": 0.49,
+        "ci95_pp": [
+          0.4,
+          0.58
+        ],
+        "p_value": 6.7283361897103185e-25
+      },
+      "year": "2025"
+    },
+    {
+      "a": {
+        "complaints": 81070,
+        "timely_yes": 80529,
+        "timely_no": 541,
+        "valid": 81070,
+        "missing_or_invalid": 0,
+        "timely_pct": 99.33,
+        "ci95_pct": [
+          99.27,
+          99.39
+        ]
+      },
+      "b": {
+        "complaints": 34776,
+        "timely_yes": 34059,
+        "timely_no": 717,
+        "valid": 34776,
+        "missing_or_invalid": 0,
+        "timely_pct": 97.94,
+        "ci95_pct": [
+          97.78,
+          98.08
+        ]
+      },
+      "gap": {
+        "gap_pp": 1.39,
+        "ci95_pp": [
+          1.23,
+          1.55
+        ],
+        "p_value": 8.18886118842662e-98
+      },
+      "year": "2026"
+    }
+  ],
+  "routing_lag": {
+    "deposit_accounts": {
+      "complaints": 501237,
+      "lag_valid": 500837,
+      "lag_negative": 400,
+      "lag_median_days": 0.0,
+      "segment": "deposit_accounts",
+      "lag_missing_or_invalid": 0,
+      "lag_mean_days": 1.65,
+      "lag_p90_days": 4.0
+    },
+    "transfers_payments": {
+      "complaints": 204780,
+      "lag_valid": 204700,
+      "lag_negative": 80,
+      "lag_median_days": 0.0,
+      "segment": "transfers_payments",
+      "lag_missing_or_invalid": 0,
+      "lag_mean_days": 1.36,
+      "lag_p90_days": 1.0
+    }
+  },
+  "issue_top": {
+    "deposit_accounts": [
+      {
+        "issue": "Managing an account",
+        "complaints": 242749,
+        "share_pct": 48.43
+      },
+      {
+        "issue": "Closing an account",
+        "complaints": 53515,
+        "share_pct": 10.68
+      },
+      {
+        "issue": "Problem with a lender or other company charging your account",
+        "complaints": 46854,
+        "share_pct": 9.35
+      },
+      {
+        "issue": "Account opening, closing, or management",
+        "complaints": 37959,
+        "share_pct": 7.57
+      },
+      {
+        "issue": "Opening an account",
+        "complaints": 37748,
+        "share_pct": 7.53
+      }
+    ],
+    "transfers_payments": [
+      {
+        "issue": "Other transaction problem",
+        "complaints": 72910,
+        "share_pct": 35.6
+      },
+      {
+        "issue": "Fraud or scam",
+        "complaints": 51148,
+        "share_pct": 24.98
+      },
+      {
+        "issue": "Unauthorized transactions or other transaction problem",
+        "complaints": 19702,
+        "share_pct": 9.62
+      },
+      {
+        "issue": "Money was not available when promised",
+        "complaints": 14427,
+        "share_pct": 7.05
+      },
+      {
+        "issue": "Managing, opening, or closing your mobile wallet account",
+        "complaints": 12943,
+        "share_pct": 6.32
+      }
+    ]
+  },
+  "issue_gaps": [
+    {
+      "issue": "Managing an account",
+      "deposit_accounts_complaints": 242749,
+      "transfers_payments_complaints": 0,
+      "deposit_accounts_share_pct": 48.43,
+      "transfers_payments_share_pct": 0.0,
+      "gap_pp": 48.43,
+      "reliable": true
+    },
+    {
+      "issue": "Other transaction problem",
+      "deposit_accounts_complaints": 0,
+      "transfers_payments_complaints": 72910,
+      "deposit_accounts_share_pct": 0.0,
+      "transfers_payments_share_pct": 35.6,
+      "gap_pp": -35.6,
+      "reliable": true
+    },
+    {
+      "issue": "Fraud or scam",
+      "deposit_accounts_complaints": 0,
+      "transfers_payments_complaints": 51148,
+      "deposit_accounts_share_pct": 0.0,
+      "transfers_payments_share_pct": 24.98,
+      "gap_pp": -24.98,
+      "reliable": true
+    },
+    {
+      "issue": "Closing an account",
+      "deposit_accounts_complaints": 53515,
+      "transfers_payments_complaints": 0,
+      "deposit_accounts_share_pct": 10.68,
+      "transfers_payments_share_pct": 0.0,
+      "gap_pp": 10.68,
+      "reliable": true
+    },
+    {
+      "issue": "Unauthorized transactions or other transaction problem",
+      "deposit_accounts_complaints": 0,
+      "transfers_payments_complaints": 19702,
+      "deposit_accounts_share_pct": 0.0,
+      "transfers_payments_share_pct": 9.62,
+      "gap_pp": -9.62,
+      "reliable": true
+    },
+    {
+      "issue": "Problem with a lender or other company charging your account",
+      "deposit_accounts_complaints": 46854,
+      "transfers_payments_complaints": 0,
+      "deposit_accounts_share_pct": 9.35,
+      "transfers_payments_share_pct": 0.0,
+      "gap_pp": 9.35,
+      "reliable": true
+    },
+    {
+      "issue": "Account opening, closing, or management",
+      "deposit_accounts_complaints": 37959,
+      "transfers_payments_complaints": 0,
+      "deposit_accounts_share_pct": 7.57,
+      "transfers_payments_share_pct": 0.0,
+      "gap_pp": 7.57,
+      "reliable": true
+    },
+    {
+      "issue": "Opening an account",
+      "deposit_accounts_complaints": 37748,
+      "transfers_payments_complaints": 0,
+      "deposit_accounts_share_pct": 7.53,
+      "transfers_payments_share_pct": 0.0,
+      "gap_pp": 7.53,
+      "reliable": true
+    },
+    {
+      "issue": "Money was not available when promised",
+      "deposit_accounts_complaints": 0,
+      "transfers_payments_complaints": 14427,
+      "deposit_accounts_share_pct": 0.0,
+      "transfers_payments_share_pct": 7.05,
+      "gap_pp": -7.05,
+      "reliable": true
+    },
+    {
+      "issue": "Managing, opening, or closing your mobile wallet account",
+      "deposit_accounts_complaints": 0,
+      "transfers_payments_complaints": 12943,
+      "deposit_accounts_share_pct": 0.0,
+      "transfers_payments_share_pct": 6.32,
+      "gap_pp": -6.32,
+      "reliable": true
+    }
+  ],
+  "fund_access_issues": [],
+  "fund_access_share_pct": null,
+  "state_gaps": [
+    {
+      "state": "Missing",
+      "deposit_accounts_complaints": 10461,
+      "transfers_payments_complaints": 10232,
+      "deposit_accounts_share_pct": 2.09,
+      "transfers_payments_share_pct": 5.0,
+      "gap_pp": -2.91,
+      "reliable": true
+    },
+    {
+      "state": "CA",
+      "deposit_accounts_complaints": 70926,
+      "transfers_payments_complaints": 24530,
+      "deposit_accounts_share_pct": 14.15,
+      "transfers_payments_share_pct": 11.98,
+      "gap_pp": 2.17,
+      "reliable": true
+    },
+    {
+      "state": "NY",
+      "deposit_accounts_complaints": 41261,
+      "transfers_payments_complaints": 13915,
+      "deposit_accounts_share_pct": 8.23,
+      "transfers_payments_share_pct": 6.8,
+      "gap_pp": 1.43,
+      "reliable": true
+    },
+    {
+      "state": "FL",
+      "deposit_accounts_complaints": 47256,
+      "transfers_payments_complaints": 16521,
+      "deposit_accounts_share_pct": 9.43,
+      "transfers_payments_share_pct": 8.07,
+      "gap_pp": 1.36,
+      "reliable": true
+    },
+    {
+      "state": "IL",
+      "deposit_accounts_complaints": 20622,
+      "transfers_payments_complaints": 10604,
+      "deposit_accounts_share_pct": 4.11,
+      "transfers_payments_share_pct": 5.18,
+      "gap_pp": -1.07,
+      "reliable": true
+    },
+    {
+      "state": "TX",
+      "deposit_accounts_complaints": 40457,
+      "transfers_payments_complaints": 18577,
+      "deposit_accounts_share_pct": 8.07,
+      "transfers_payments_share_pct": 9.07,
+      "gap_pp": -1.0,
+      "reliable": true
+    },
+    {
+      "state": "NJ",
+      "deposit_accounts_complaints": 18953,
+      "transfers_payments_complaints": 6124,
+      "deposit_accounts_share_pct": 3.78,
+      "transfers_payments_share_pct": 2.99,
+      "gap_pp": 0.79,
+      "reliable": true
+    },
+    {
+      "state": "PA",
+      "deposit_accounts_complaints": 19394,
+      "transfers_payments_complaints": 6566,
+      "deposit_accounts_share_pct": 3.87,
+      "transfers_payments_share_pct": 3.21,
+      "gap_pp": 0.66,
+      "reliable": true
+    },
+    {
+      "state": "MS",
+      "deposit_accounts_complaints": 2758,
+      "transfers_payments_complaints": 2082,
+      "deposit_accounts_share_pct": 0.55,
+      "transfers_payments_share_pct": 1.02,
+      "gap_pp": -0.47,
+      "reliable": true
+    },
+    {
+      "state": "MD",
+      "deposit_accounts_complaints": 13474,
+      "transfers_payments_complaints": 4561,
+      "deposit_accounts_share_pct": 2.69,
+      "transfers_payments_share_pct": 2.23,
+      "gap_pp": 0.46,
+      "reliable": true
+    }
+  ],
+  "response_gaps": [
+    {
+      "company_response": "Closed with explanation",
+      "deposit_accounts_complaints": 384427,
+      "transfers_payments_complaints": 181951,
+      "deposit_accounts_share_pct": 76.7,
+      "transfers_payments_share_pct": 88.85,
+      "gap_pp": -12.15,
+      "reliable": true
+    },
+    {
+      "company_response": "Closed with monetary relief",
+      "deposit_accounts_complaints": 79354,
+      "transfers_payments_complaints": 12834,
+      "deposit_accounts_share_pct": 15.83,
+      "transfers_payments_share_pct": 6.27,
+      "gap_pp": 9.56,
+      "reliable": true
+    },
+    {
+      "company_response": "Closed with non-monetary relief",
+      "deposit_accounts_complaints": 26840,
+      "transfers_payments_complaints": 8021,
+      "deposit_accounts_share_pct": 5.35,
+      "transfers_payments_share_pct": 3.92,
+      "gap_pp": 1.43,
+      "reliable": true
+    },
+    {
+      "company_response": "Closed",
+      "deposit_accounts_complaints": 2392,
+      "transfers_payments_complaints": 62,
+      "deposit_accounts_share_pct": 0.48,
+      "transfers_payments_share_pct": 0.03,
+      "gap_pp": 0.45,
+      "reliable": true
+    },
+    {
+      "company_response": "Closed without relief",
+      "deposit_accounts_complaints": 1987,
+      "transfers_payments_complaints": 0,
+      "deposit_accounts_share_pct": 0.4,
+      "transfers_payments_share_pct": 0.0,
+      "gap_pp": 0.4,
+      "reliable": true
+    },
+    {
+      "company_response": "In progress",
+      "deposit_accounts_complaints": 4680,
+      "transfers_payments_complaints": 1358,
+      "deposit_accounts_share_pct": 0.93,
+      "transfers_payments_share_pct": 0.66,
+      "gap_pp": 0.27,
+      "reliable": true
+    },
+    {
+      "company_response": "Closed with relief",
+      "deposit_accounts_complaints": 1216,
+      "transfers_payments_complaints": 0,
+      "deposit_accounts_share_pct": 0.24,
+      "transfers_payments_share_pct": 0.0,
+      "gap_pp": 0.24,
+      "reliable": true
+    },
+    {
+      "company_response": "Untimely response",
+      "deposit_accounts_complaints": 341,
+      "transfers_payments_complaints": 554,
+      "deposit_accounts_share_pct": 0.07,
+      "transfers_payments_share_pct": 0.27,
+      "gap_pp": -0.2,
+      "reliable": true
+    }
+  ],
+  "channel_gaps": [
+    {
+      "channel": "Web",
+      "deposit_accounts_complaints": 362335,
+      "transfers_payments_complaints": 191268,
+      "deposit_accounts_share_pct": 72.29,
+      "transfers_payments_share_pct": 93.4,
+      "gap_pp": -21.11,
+      "reliable": true
+    },
+    {
+      "channel": "Referral",
+      "deposit_accounts_complaints": 86016,
+      "transfers_payments_complaints": 3160,
+      "deposit_accounts_share_pct": 17.16,
+      "transfers_payments_share_pct": 1.54,
+      "gap_pp": 15.62,
+      "reliable": true
+    },
+    {
+      "channel": "Phone",
+      "deposit_accounts_complaints": 42502,
+      "transfers_payments_complaints": 9268,
+      "deposit_accounts_share_pct": 8.48,
+      "transfers_payments_share_pct": 4.53,
+      "gap_pp": 3.95,
+      "reliable": true
+    },
+    {
+      "channel": "Postal mail",
+      "deposit_accounts_complaints": 8556,
+      "transfers_payments_complaints": 952,
+      "deposit_accounts_share_pct": 1.71,
+      "transfers_payments_share_pct": 0.46,
+      "gap_pp": 1.25,
+      "reliable": true
+    },
+    {
+      "channel": "Fax",
+      "deposit_accounts_complaints": 1752,
+      "transfers_payments_complaints": 130,
+      "deposit_accounts_share_pct": 0.35,
+      "transfers_payments_share_pct": 0.06,
+      "gap_pp": 0.29,
+      "reliable": true
+    },
+    {
+      "channel": "Email",
+      "deposit_accounts_complaints": 76,
+      "transfers_payments_complaints": 2,
+      "deposit_accounts_share_pct": 0.02,
+      "transfers_payments_share_pct": 0.0,
+      "gap_pp": 0.02,
+      "reliable": false
+    }
+  ]
+}
