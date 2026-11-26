@@ -70,13 +70,17 @@ def collect(
         yearly.append(entry)
 
     volume: dict[str, int] = {}
+    volume_by_year: dict[str, dict[str, int]] = {}
     for r in trend:
         volume[r["segment"]] = volume.get(r["segment"], 0) + int(r["complaints"])
+        per_year = volume_by_year.setdefault(r["year_month"][:4], {})
+        per_year[r["segment"]] = per_year.get(r["segment"], 0) + int(r["complaints"])
 
     return {
         "segments": [seg_a, seg_b],
         "filters": {k: v for k, v in base.items() if k != "segment"},
         "volume": volume,
+        "volume_by_year": dict(sorted(volume_by_year.items())),
         "timely_overall": m.compare_timely(by_seg.get(seg_a), by_seg.get(seg_b)),
         "timely_by_year": yearly,
         "routing_lag": {s: dict(lag[s]) if s in lag else None for s in (seg_a, seg_b)},
@@ -108,6 +112,15 @@ def render_markdown(result: Mapping[str, Any], freshness: Mapping[str, Any] | No
     lines += ["## Q1 Volume", "", "| Segment | Complaints |", "|---|---:|"]
     lines += [f"| {s} | {_fmt(result['volume'].get(s, 0))} |" for s in (a, b)]
 
+    lines += ["", "### Complaints per year (the newest year is partial)", ""]
+    lines += [f"| Year | {a} | {b} |", "|---|---:|---:|"]
+    for year, per in result["volume_by_year"].items():
+        lines.append(f"| {year} | {_fmt(per.get(a, 0))} | {_fmt(per.get(b, 0))} |")
+    for seg in (a, b):
+        lines += ["", f"### Top issues in {seg} (share within segment)", ""]
+        lines += ["| Issue | Complaints | Share % |", "|---|---:|---:|"]
+        for r in result["issue_top"][seg]:
+            lines.append(f"| {r['issue']} | {_fmt(r['complaints'])} | {r['share_pct']} |")
     fa = result.get("fund_access_share_pct")
     if fa:
         lines += [

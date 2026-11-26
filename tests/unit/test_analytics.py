@@ -106,6 +106,7 @@ def test_collect_and_render_without_database():
     assert result["volume"] == {A: 100, B: 40}
     assert [y["year"] for y in result["timely_by_year"]] == ["2023", "2024"]
     assert result["timely_overall"]["gap"]["gap_pp"] == 20.0
+    assert result["volume_by_year"] == {"2023": {A: 100}, "2024": {B: 40}}
     assert result["fund_access_share_pct"] == {A: 100.0, B: 100.0}
     assert result["filters"] == {"date_from": "2023-01-01", "date_to": "2024-12-31"}
     md = render_markdown(result, {"latest_date_received": "2026-11-20"})
