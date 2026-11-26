@@ -83,6 +83,7 @@ def _fake_run(pipeline):
         {
             "segment": A,
             "issue": "i",
+            "state": "NY",
             "channel": "Web",
             "company_response": "r",
             "complaints": 100,
@@ -91,6 +92,7 @@ def _fake_run(pipeline):
         {
             "segment": B,
             "issue": "i",
+            "state": "NY",
             "channel": "Web",
             "company_response": "r",
             "complaints": 40,
@@ -100,10 +102,11 @@ def _fake_run(pipeline):
 
 
 def test_collect_and_render_without_database():
-    result = collect(_fake_run, A, B, "2023-01-01", "2024-12-31")
+    result = collect(_fake_run, A, B, "2023-01-01", "2024-12-31", ["i"])
     assert result["volume"] == {A: 100, B: 40}
     assert [y["year"] for y in result["timely_by_year"]] == ["2023", "2024"]
     assert result["timely_overall"]["gap"]["gap_pp"] == 20.0
+    assert result["fund_access_share_pct"] == {A: 100.0, B: 100.0}
     assert result["filters"] == {"date_from": "2023-01-01", "date_to": "2024-12-31"}
     md = render_markdown(result, {"latest_date_received": "2026-11-20"})
     assert "Timely company response" in md and "routing" in md.lower()

@@ -2,35 +2,43 @@
 
 Author: Maroun Machaalany. Status: **code and tests done; real-data results are produced by running
 the script on the laptop (section 5) and committed as evidence.** No number in this report is
-invented: every figure comes from `docs/evidence/turn5_analysis_results.md`.
+invented: every figure comes from `docs/analysis/turn5_analysis_results.md`.
 
 ## 1. Question
 
 From `config/settings.yaml`: how do reported delays and problems accessing funds differ between
 **deposit accounts** (`deposit_accounts`) and **transfers / payments** (`transfers_payments`)?
 
-## 2. Assumption to confirm (honest note)
+## 2. Source of the requirements
 
-The brief's section 9 ("minimum measures") is not in the repository, so the measures below were
-**chosen by me from the fields available in the serving layer** and documented here. If the brief
-lists different mandatory measures, they must be added; the pipeline is built so that adding one is
-a new function in `analytics/measures.py` plus one line in `collect()`.
+Brief V2 sections 7 and 9 as summarised in Mhamad's hand-off (`TURN5_HANDOFF_FOR_MAROUN.md`):
+five analytical questions (two pre-declared for the demo), a reproducible script writing to
+`docs/analysis/`, metric definitions, a findings write-up with limitations, tests, and a hand-off
+to Ali. The brief file itself is not in the repository.
 
-## 3. Measures
+## 3. The five questions and their measures
 
-| # | Measure | Why it answers the question | Source (only `database.queries`) |
+| # | Question | Demo | Source (only `database.queries`) |
 |---|---|---|---|
-| M1 | Volume per segment | Context for every share | `monthly_trend` |
-| M2 | Timely company response % = Yes / (Yes + No), Wilson 95 % CI, gap between segments with CI and z-test p-value | "Delay": the company's own timeliness flag | `timely_rate` |
-| M3 | M2 per year, counts re-summed (never averaged) | Is the gap stable or a one-year effect? | `timely_rate` with year filters |
-| M4 | Routing lag (mean, median, P90) per segment | Delay inside CFPB routing. **Not** company resolution time | `routing_lag_summary` |
-| M5 | Issue-share gaps (pp) within each segment | "Problems accessing funds": which issues weigh more on one side. Data-driven, no issue names hard-coded | `issue_mix` |
-| M6 | Company response mix gaps (pp) | Do outcomes (relief, explanation) differ? | `company_response_mix` |
-| M7 | Submission channel gaps (pp) | Different customers may use different channels | `channel_mix` |
+| Q1 | How did monthly complaint volumes change for deposit accounts vs transfers (labels changed in April 2017)? | | `monthly_trend` |
+| Q2 | Which issues dominate each segment, and how large is the share of fund-access problems in each? | yes | `issue_mix` (+ `--fund-access-issue`) |
+| Q3 | Is the timely-response rate different between the segments, and has it changed over time? | yes | `timely_rate`, overall and per year |
+| Q4 | How do company responses differ (e.g. share closed with monetary relief)? | | `company_response_mix` |
+| Q5 | Do routing interval, channel or state mix differ? | | `routing_lag_summary`, `channel_mix`, `state_distribution` |
 
-Rules kept (from `docs/data_contracts.md` section 8): shares are computed within each segment;
-missing/invalid values are reported separately and never counted as No; cells under 10 complaints
-are marked unreliable; timely percentages are always recomputed from summed counts.
+The fund-access issue labels are NOT hard-coded: after reading the real labels in the Q2 table, they
+are passed explicitly (`--fund-access-issue "<exact label>"`, repeatable) and recorded in the output.
+
+### Metric definitions
+
+* Total = distinct curated Complaint IDs (one document per ID).
+* Share = complaints in the category / complaints in the same segment (never across segments).
+* Timely % = Yes / (Yes + No); missing or invalid reported separately; Wilson 95 % CI; yearly or
+  monthly values are re-summed from counts, never averaged.
+* Gap = segment A minus segment B in percentage points, with 95 % CI and z-test p-value.
+* Interval = CFPB receipt to referral (routing), with missing/invalid/negative reported; not the
+  company's resolution time.
+* Cells under 10 complaints are marked unreliable. The newest month (Nov 2026) is partial.
 
 ## 4. How to read the results (limits to state in the defence)
 
@@ -49,19 +57,28 @@ are marked unreliable; timely percentages are always recomputed from summed coun
 ```
 docker compose up -d
 docker compose run --rm spark python -m analytics.run_analysis
-# optional window: --date-from 2018-01-01 --date-to 2025-12-31
+# optional: --date-from 2024-01-01 --fund-access-issue "<exact issue label>"
 ```
 
-Outputs `docs/evidence/turn5_analysis_results.{json,md}` (also printed). Pure-logic tests need no
+Outputs `docs/analysis/turn5_analysis_results.{json,md}` (also printed). Pure-logic tests need no
 database: `python -m pytest tests/unit/test_analytics.py`.
 
 ## 6. Results on real data
 
-*To be filled from `docs/evidence/turn5_analysis_results.md` after the run (freshness line, table
+*To be filled from `docs/analysis/turn5_analysis_results.md` after the run (freshness line, table
 M2, one-sentence reading per measure).* Placeholder deliberately left empty to avoid unverified
 figures.
 
-## 7. Files
+## 7. Hand-off to Ali (dashboard, Turn 6)
 
-`analytics/measures.py` (statistics), `analytics/run_analysis.py` (collection and rendering),
-`tests/unit/test_analytics.py` (7 tests), this report.
+Views (all from `database.queries`, same filter dict): (1) monthly trend by segment (`monthly_trend`);
+(2) issue mix within segment (`issue_mix`); (3) timely % by segment and year (`timely_rate`);
+(4) company response mix (`company_response_mix`); (5) routing lag, channel and state mix.
+Filters: date range plus segment, product, issue, state, channel, company. Demo questions: Q2 and Q3.
+Always show counts and shares within segment, grey out `below_min_cell`, show freshness from the
+newest `pipeline_runs` document.
+
+## 8. Files
+
+`analytics/measures.py`, `analytics/run_analysis.py`, `tests/unit/test_analytics.py`, this report.
+Findings (`docs/analysis.md`) come in the second PR after the real-data run.

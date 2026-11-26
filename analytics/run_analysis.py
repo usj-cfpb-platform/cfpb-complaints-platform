@@ -26,11 +26,16 @@ from database import queries
 
 Runner = Callable[[Sequence[Mapping[str, Any]]], list[dict[str, Any]]]
 
-DEFAULT_OUT = Path("docs/evidence")
+DEFAULT_OUT = Path("docs/analysis")
 
 
 def collect(
-    run: Runner, seg_a: str, seg_b: str, date_from: str | None = None, date_to: str | None = None
+    run: Runner,
+    seg_a: str,
+    seg_b: str,
+    date_from: str | None = None,
+    date_to: str | None = None,
+    fund_access_issues: Sequence[str] = (),
 ) -> dict[str, Any]:
     """Run every query and compute the Turn 5 measures. ``run`` executes one pipeline."""
     base: dict[str, Any] = {"segment": [seg_a, seg_b]}
@@ -46,6 +51,14 @@ def collect(
     responses = run(queries.company_response_mix(base))
     channels = run(queries.channel_mix(base))
     lag = m.by_segment(run(queries.routing_lag_summary(base)))
+    states = run(queries.state_distribution(base))
+    fund_access = {
+        seg: round(
+            sum(r["share_pct"] for r in issues if r["segment"] == seg and r["issue"] in wanted), 2
+        )
+        for wanted in [set(fund_access_issues)]
+        for seg in (seg_a, seg_b)
+    }
 
     years = sorted({r["year_month"][:4] for r in trend})
     yearly = []
@@ -69,6 +82,9 @@ def collect(
         "routing_lag": {s: dict(lag[s]) if s in lag else None for s in (seg_a, seg_b)},
         "issue_top": {s: m.top_n(issues, s, "issue") for s in (seg_a, seg_b)},
         "issue_gaps": m.share_gaps(issues, "issue", seg_a, seg_b)[:10],
+        "fund_access_issues": sorted(fund_access_issues),
+        "fund_access_share_pct": fund_access if fund_access_issues else None,
+        "state_gaps": m.share_gaps(states, "state", seg_a, seg_b)[:10],
         "response_gaps": m.share_gaps(responses, "company_response", seg_a, seg_b),
         "channel_gaps": m.share_gaps(channels, "channel", seg_a, seg_b),
     }
@@ -84,15 +100,22 @@ def render_markdown(result: Mapping[str, Any], freshness: Mapping[str, Any] | No
     if freshness:
         lines += [
             f"Data freshness: latest complaint received {freshness.get('latest_date_received')}, "
-            f"serving layer refreshed {freshness.get('serving_refreshed_at')}.",
+            f"serving layer refreshed {freshness.get('serving_refreshed_at')}. "
+            "The latest month is partial.",
             "",
         ]
     lines += [f"Filters: {result['filters'] or 'none (all dates)'}", ""]
-    lines += ["## Volume", "", "| Segment | Complaints |", "|---|---:|"]
+    lines += ["## Q1 Volume", "", "| Segment | Complaints |", "|---|---:|"]
     lines += [f"| {s} | {_fmt(result['volume'].get(s, 0))} |" for s in (a, b)]
 
+    fa = result.get("fund_access_share_pct")
+    if fa:
+        lines += [
+            "",
+            f"Fund-access issues {result['fund_access_issues']}: share within segment {fa}.",
+        ]
     t = result["timely_overall"]
-    lines += ["", "## Timely company response (Yes / (Yes + No))", ""]
+    lines += ["", "## Q3 Timely company response (Yes / (Yes + No))", ""]
     lines += [
         "| Segment | Valid | Timely % | 95 % CI | Missing/invalid |",
         "|---|---:|---:|---|---:|",
@@ -119,7 +142,7 @@ def render_markdown(result: Mapping[str, Any], freshness: Mapping[str, Any] | No
             f"| {_fmt(gap)} |"
         )
 
-    lines += ["", "## Routing lag (CFPB receipt to referral, not resolution time)", ""]
+    lines += ["", "## Q5 Routing lag (CFPB receipt to referral, not resolution time)", ""]
     lines += ["| Segment | Valid | Mean | Median | P90 |", "|---|---:|---:|---:|---:|"]
     for s in (a, b):
         r = result["routing_lag"].get(s) or {}
@@ -129,9 +152,10 @@ def render_markdown(result: Mapping[str, Any], freshness: Mapping[str, Any] | No
         )
 
     for title, key, label in (
-        ("Largest issue-share gaps", "issue_gaps", "issue"),
-        ("Company response mix gaps", "response_gaps", "company_response"),
-        ("Submission channel gaps", "channel_gaps", "channel"),
+        ("Q2 Largest issue-share gaps", "issue_gaps", "issue"),
+        ("Q4 Company response mix gaps", "response_gaps", "company_response"),
+        ("Q5 Submission channel gaps", "channel_gaps", "channel"),
+        ("Q5 Largest state-share gaps", "state_gaps", "state"),
     ):
         lines += ["", f"## {title} (share within segment, pp = {a} minus {b})", ""]
         lines += [f"| {label} | {a} % | {b} % | Gap (pp) | Reliable |", "|---|---:|---:|---:|---|"]
@@ -147,6 +171,12 @@ def _cli(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Run the Turn 5 analysis on MongoDB.")
     parser.add_argument("--date-from")
     parser.add_argument("--date-to")
+    parser.add_argument(
+        "--fund-access-issue",
+        action="append",
+        default=[],
+        help="exact CFPB issue label counted as a fund-access problem (repeatable)",
+    )
     parser.add_argument("--out-dir", type=Path, default=DEFAULT_OUT)
     parser.add_argument("--name", default="turn5_analysis_results")
     args = parser.parse_args(argv)
@@ -160,7 +190,12 @@ def _cli(argv: list[str] | None = None) -> int:
         return 2
     db = get_db()
     result = collect(
-        lambda p: queries.run(db, p), segments[0], segments[1], args.date_from, args.date_to
+        lambda p: queries.run(db, p),
+        segments[0],
+        segments[1],
+        args.date_from,
+        args.date_to,
+        args.fund_access_issue,
     )
     last = db.pipeline_runs.find_one(sort=[("finished_at", -1)]) or {}
     freshness = last.get("freshness")
